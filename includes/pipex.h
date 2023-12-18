@@ -6,7 +6,7 @@
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 15:38:33 by josfelip          #+#    #+#             */
-/*   Updated: 2023/12/18 15:47:32 by josfelip         ###   ########.fr       */
+/*   Updated: 2023/12/18 16:22:46 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define PIPEX_H
 
 # include <fcntl.h>
+# include <unistd.h>
+# include <stdio.h>
 
 typedef enum e_bool
 {
