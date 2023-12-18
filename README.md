@@ -1,0 +1,1 @@
+GitHub Copilot: The `< infile` syntax in a shell environment is used to redirect input from a file. This means that the command preceding `< infile` will read its input from the file `infile` instead of from the standard input (usually the keyboard).
