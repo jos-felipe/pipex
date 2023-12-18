@@ -1,1 +1,17 @@
-GitHub Copilot: The `< infile` syntax in a shell environment is used to redirect input from a file. This means that the command preceding `< infile` will read its input from the file `infile` instead of from the standard input (usually the keyboard).
+<h1>Description</h1>
+<p>
+This project is about hanling pipes.
+
+Your program will be executed as follows:
+```bash 
+/pipex file1 cmd1 cmd2 file2
+```
+
+It must behave exaclty the same as the shell command below:
+```bash 
+$> < file1 cmd1 | cmd2 > file2
+```
+</p>
+
+## Implementation Reference
+<href>https://github.com/ArthurSobreira/42_pipex</href>
