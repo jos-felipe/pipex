@@ -6,7 +6,7 @@
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 15:38:33 by josfelip          #+#    #+#             */
-/*   Updated: 2023/12/18 16:22:46 by josfelip         ###   ########.fr       */
+/*   Updated: 2023/12/19 11:36:20 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,11 @@
 # include <fcntl.h>
 # include <unistd.h>
 # include <stdio.h>
+# include <sys/wait.h>
+
+# define CMD_NOT_FOUND 127
+# define SPACE 32
+# define TWO_POINTS 58
 
 typedef enum e_bool
 {
@@ -47,5 +52,31 @@ typedef struct s_pipex
 	t_cmd	*commands_array;
 	t_bool	success;
 }			t_pipex;
+
+// Start Functions
+void	start_io_files(t_pipex *pipex, char *argv[]);
+void	start_input_file(t_pipex *pipex, char *in_file);
+void	start_output_file(t_pipex *pipex, char *out_file);
+
+// Utils Functions
+void	handle_error(short exit_code);
+void	handle_file_error(short exit_code);
+void	clear_all(t_pipex *pipex, short exit_code);
+void	clear_invalid_command(t_pipex *pipex, size_t cmd_pos);
+void	free_split(char **split);
+void	free_variables(char *var, char **split_var);
+
+// Commands Functions
+void	get_commands(t_pipex *pipex, char *argv[], char *envp[]);
+char	*validate_path(char *cmd_name, char **split_path);
+char	*get_cmd_path(char *cmd_name, char *envp[]);
+char	*get_cmd_name(char *cmd_name);
+char	**get_arguments(char *argv);
+
+// Execute Functions
+void	execute_commands(t_pipex *pipex);
+void	exec_child_process(t_pipex *pipex, t_cmd *command, size_t cmd_pos);
+void	initial_process(t_pipex *pipex, t_cmd *command, size_t cmd_pos);
+void	final_process(t_pipex *pipex, t_cmd *command, size_t cmd_pos);
 
 #endif
