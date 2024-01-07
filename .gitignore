@@ -9,6 +9,6 @@ pipex_bonus
 ```
 .vscode/tasks.json
 .vscode/launch.json
-infile
-outfile
+infile*
+outfile*
 ```

@@ -45,8 +45,8 @@ all: libft $(BIN_PATH) $(NAME)
 libft:
 ifeq ($(wildcard $(LIB_PATH)/$(LIB_NAME)),)
 	@make -C $(LIB_PATH) --no-print-directory
-	@make get_next_line -C $(LIB_PATH) --no-print-directory
-	@make ft_printf -C $(LIB_PATH) --no-print-directory
+	# @make get_next_line -C $(LIB_PATH) --no-print-directory
+	# @make ft_printf -C $(LIB_PATH) --no-print-directory
 endif
 
 $(BIN_PATH)%.o: $(MANDATORY_SOURCES_PATH)%.c
