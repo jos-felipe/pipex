@@ -1,6 +1,6 @@
 NAME = pipex
-DFLAGS = -Wall -Werror -Wextra -g3
-CFLAGS = -Wall -Werror -Wextra -O3 -fomit-frame-pointer -finline-functions
+DFLAGS = -g3
+CFLAGS = -Wall -Werror -Wextra
 ifdef WITH_DEBUG
   CFLAGS = $(DFLAGS)
 endif
