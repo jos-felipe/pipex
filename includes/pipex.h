@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: josfelip <josfelip@student.42.fr>          +#+  +:+       +#+        */
+/*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 15:38:33 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/06 22:30:36 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/11 14:56:42 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_H
 # define PIPEX_H
 
-# include "../libs/libft/libft.h"
+# include "../lib/libft/libft.h"
 # include <fcntl.h>
 # include <unistd.h>
 # include <stdio.h>
