@@ -19,8 +19,7 @@ COLOR_LIMITER = "\033[0m"
 
 # Paths Definitions
 HEADER_PATH = ./includes
-BIN_PATH = ./bin/
-DEP_PATH = ./dep/
+OBJ_PATH = ./obj/
 MANDATORY_SOURCES_PATH = ./src/mandatory/
 
 MANDATORY_SOURCES = \
@@ -31,41 +30,26 @@ MANDATORY_SOURCES = \
 	main.c \
 	start_files.c
 
-OBJECTS = $(addprefix $(BIN_PATH), $(MANDATORY_SOURCES:%.c=%.o))
-# OBJECTS = $(addprefix $(BIN_PATH), $(MANDATORY_SOURCES:%.c=%.o))
-# DEP = $(MANDATORY_SOURCES:%.c=%.d)
-DEP = $(addprefix $(DEP_PATH), $(MANDATORY_SOURCES:%.c=%.d))
+OBJECTS = $(addprefix $(OBJ_PATH), $(MANDATORY_SOURCES:%.c=%.o))
 
-all: libft $(BIN_PATH) $(DEP_PATH) $(NAME)
+all: libft $(OBJ_PATH) $(NAME)
 
 libft:
-	@make -C $(LIB_PATH) --no-print-directory
+	@make --directory=$(LIB_PATH) --no-print-directory
 
-$(BIN_PATH):
-	@mkdir -p $(BIN_PATH)
+$(OBJ_PATH):
+	@mkdir --parents $(OBJ_PATH)
 
-$(DEP_PATH):
-	@mkdir -p $(DEP_PATH)
-
-$(NAME): $(OBJECTS) $(DEP)
+$(NAME): $(OBJECTS)
 	@$(CC) $(CFLAGS) -o $(NAME) $(OBJECTS) -L $(LIB_PATH) -lft
 	@echo $(CYAN)" ----------------------------------------------"$(COLOR_LIMITER)
 	@echo $(CYAN)"| PIPEX executable was created successfully!! |"$(COLOR_LIMITER)
 	@echo $(CYAN)"----------------------------------------------"$(COLOR_LIMITER)
 	@echo " "
 
--include $(DEP)
-clear.o: src/mandatory/clear.c includes/pipex.h includes/../lib/libft/libft.h
-	
-
-$(BIN_PATH)%.o: $(MANDATORY_SOURCES_PATH)%.c
+$(OBJ_PATH)%.o: $(MANDATORY_SOURCES_PATH)%.c $(HEADER_PATH)/pipex.h
 	@echo $(GREEN)[Compiling]$(COLOR_LIMITER) $(WHITE)$(notdir $(<))...$(COLOR_LIMITER)
 	$(CC) $(CFLAGS) -c $< -o $@ -I $(HEADER_PATH)
-	@echo " "
-
-$(DEP_PATH)%.d: $(MANDATORY_SOURCES_PATH)%.c
-	@echo $(RED)[Generating Prerequisites]$(COLOR_LIMITER) $(WHITE)$(notdir $(<))...$(COLOR_LIMITER)
-	$(CC) -MMD -MP -c $< -MF $@ -I $(HEADER_PATH)
 	@echo " "
 
 valgrind: all
@@ -76,20 +60,26 @@ valgrind: all
 	--track-origins=yes \
 	--log-file=$(VALGRIND_LOG) \
 	./$(NAME) infile "cat" "grep teste" outfile
-	@cat $(VALGRIND_LOG) 
+	@cat $(VALGRIND_LOG)
+
+qa: all
+	@echo $(GREEN)[Running Norminette]$(COLOR_LIMITER)
+	@norminette -R CheckForbiddenSourceHeader $(MANDATORY_SOURCES_PATH) $(HEADER_PATH)
+	@echo $(GREEN)[Running Norminette on Libft]$(COLOR_LIMITER)
+	@norminette -R CheckForbiddenSourceHeader $(LIB_PATH)
+	./$(NAME) infile "cat" "grep teste" outfile
+	-./$(NAME) invalid_file "cat" "grep teste" outfile
+	-./$(NAME) infile "cat" "grep teste" /etc/passwd
+	-./$(NAME) infile "echo 1" "2" out
 
 clean:
 	@echo $(RED)[Removing Objects]$(COLOR_LIMITER)
-	@make clean -C $(LIB_PATH) --no-print-directory
-	@rm -rf $(BIN_PATH)
-	@echo $(RED)[Removing Dependencies]$(COLOR_LIMITER)
-	# @rm -rf $(DEP_PATH)
+	-rm -rf $(OBJ_PATH)
 
 fclean: clean
 	@echo $(RED)[Removing $(NAME) executable]$(COLOR_LIMITER)
 	@make fclean -C $(LIB_PATH) --no-print-directory
 	@rm -rf $(NAME)
-	@rm -rf $(NAME_BONUS)
 	@rm -rf $(VALGRIND_LOG)
 
 re: fclean
@@ -98,7 +88,4 @@ re: fclean
 debug:
 	@make WITH_DEBUG=TRUE --no-print-directory
 
-debug_re: fclean
-	@make WITH_DEBUG=TRUE --no-print-directory
-
-.PHONY: all clean fclean re libft valgrind debug debug_re
+.PHONY: all clean fclean re libft valgrind debug

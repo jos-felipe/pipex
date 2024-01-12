@@ -5,7 +5,6 @@
 pipex
 pipex_bonus
 .DS_Store
-```
 infile*
 outfile*
-```
+valgrind.log

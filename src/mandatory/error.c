@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: josfelip <josfelip@student.42.fr>          +#+  +:+       +#+        */
+/*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 16:16:51 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/06 22:34:01 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/12 13:14:25 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 void	handle_error(short exit_code)
 {
 	if (exit_code == 0)
-		ft_putstr_fd("\033[32;3mPipex executed successfully :)\033[0m\n", STDOUT_FILENO);
+		ft_putstr_fd("\033[32;3mPipex executed successfully :)\033[0m\n", \
+		STDOUT_FILENO);
 	if (exit_code == CMD_NOT_FOUND)
 		perror("\033[31;3mError, command not found :(\033[0m\n");
 	if (exit_code == 1)
