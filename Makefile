@@ -38,7 +38,7 @@ libft:
 	@make --directory=$(LIB_PATH) --no-print-directory
 
 $(OBJ_PATH):
-	@mkdir --parents $(OBJ_PATH)
+	@mkdir -p $(OBJ_PATH)
 
 $(NAME): $(OBJECTS)
 	@$(CC) $(CFLAGS) -o $(NAME) $(OBJECTS) -L $(LIB_PATH) -lft
@@ -88,4 +88,4 @@ re: fclean
 debug:
 	@make WITH_DEBUG=TRUE --no-print-directory
 
-.PHONY: all clean fclean re libft valgrind debug
+.PHONY: all clean fclean re libft valgrind debug qa

@@ -9,13 +9,13 @@
 			"type": "cppdbg",
 			"request": "launch",
 			"program": "${workspaceFolder}/pipex",
-			"args": ["infile", "1", "2", "outfile"],
+			"args": ["infile", "cat", "grep a", "outfile"],
 			"stopAtEntry": false,
 			"cwd": "${workspaceFolder}",
 			"environment": [],
 			"externalConsole": false,
 			"preLaunchTask": "build",
-			"MIMode": "gdb"
+			"MIMode": "lldb"
 		}
 
 	]
