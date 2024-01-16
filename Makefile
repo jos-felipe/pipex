@@ -1,10 +1,13 @@
 NAME = pipex
-NAME_BONUS = pipex_bonus
-CFLAGS = -Wall -Wextra -Werror -O3 -g3 
+DFLAGS = -g3
+CFLAGS = -Wall -Werror -Wextra
+ifdef WITH_DEBUG
+  CFLAGS = $(DFLAGS)
+endif
 VALGRIND_LOG = valgrind.log
 
 # Paths for libraries
-LIB_PATH = ./libs/libft
+LIB_PATH = ./lib/libft
 LIB_NAME = libft.a
 
 # Colors Definition 
@@ -16,9 +19,8 @@ COLOR_LIMITER = "\033[0m"
 
 # Paths Definitions
 HEADER_PATH = ./includes
-BIN_PATH = ./bin/
+OBJ_PATH = ./obj/
 MANDATORY_SOURCES_PATH = ./src/mandatory/
-BONUS_SOURCES_PATH = ./src/bonus/
 
 MANDATORY_SOURCES = \
 	clear.c \
@@ -28,55 +30,27 @@ MANDATORY_SOURCES = \
 	main.c \
 	start_files.c
 
-BONUS_SOURCES = \
-	clear_bonus.c \
-	commands_bonus.c \
-	error_bonus.c \
-	execute_bonus.c \
-	here_doc_bonus.c \
-	main_bonus.c \
-	start_files_bonus.c
+OBJECTS = $(addprefix $(OBJ_PATH), $(MANDATORY_SOURCES:%.c=%.o))
 
-OBJECTS = $(addprefix $(BIN_PATH), $(MANDATORY_SOURCES:%.c=%.o))
-BONUS_OBJECTS = $(addprefix $(BIN_PATH), $(BONUS_SOURCES:%.c=%.o))
-
-all: libft $(BIN_PATH) $(NAME)
+all: libft $(OBJ_PATH) $(NAME)
 
 libft:
-ifeq ($(wildcard $(LIB_PATH)/$(LIB_NAME)),)
-	@make -C $(LIB_PATH) --no-print-directory
-	@make get_next_line -C $(LIB_PATH) --no-print-directory
-	@make ft_printf -C $(LIB_PATH) --no-print-directory
-endif
+	@make --directory=$(LIB_PATH) --no-print-directory
 
-$(BIN_PATH)%.o: $(MANDATORY_SOURCES_PATH)%.c
-	@echo $(GREEN)[Compiling]$(COLOR_LIMITER) $(WHITE)$(notdir $(<))...$(COLOR_LIMITER)
-	$(CC) $(CFLAGS) -c $< -o $@ -I $(HEADER_PATH)
-	@echo " "
+$(OBJ_PATH):
+	@mkdir -p $(OBJ_PATH)
 
 $(NAME): $(OBJECTS)
+	@$(CC) $(CFLAGS) -o $(NAME) $(OBJECTS) -L $(LIB_PATH) -lft
 	@echo $(CYAN)" ----------------------------------------------"$(COLOR_LIMITER)
 	@echo $(CYAN)"| PIPEX executable was created successfully!! |"$(COLOR_LIMITER)
 	@echo $(CYAN)"----------------------------------------------"$(COLOR_LIMITER)
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJECTS) -L $(LIB_PATH) -lft
 	@echo " "
 
-bonus: libft $(BIN_PATH) $(NAME_BONUS)
-
-$(BIN_PATH)%.o: $(BONUS_SOURCES_PATH)%.c
+$(OBJ_PATH)%.o: $(MANDATORY_SOURCES_PATH)%.c $(HEADER_PATH)/pipex.h
 	@echo $(GREEN)[Compiling]$(COLOR_LIMITER) $(WHITE)$(notdir $(<))...$(COLOR_LIMITER)
 	$(CC) $(CFLAGS) -c $< -o $@ -I $(HEADER_PATH)
 	@echo " "
-
-$(NAME_BONUS): $(BONUS_OBJECTS)
-	@echo $(CYAN)" ----------------------------------------------------"$(COLOR_LIMITER)
-	@echo $(CYAN)"| PIPEX_BONUS executable was created successfully!! |"$(COLOR_LIMITER)
-	@echo $(CYAN)"----------------------------------------------------"$(COLOR_LIMITER)
-	@$(CC) $(CFLAGS) -o $(NAME_BONUS) $(BONUS_OBJECTS) -L $(LIB_PATH) -lft
-	@echo " "
-
-$(BIN_PATH):
-	@mkdir -p $(BIN_PATH)
 
 valgrind: all
 	@valgrind --leak-check=full \
@@ -86,24 +60,32 @@ valgrind: all
 	--track-origins=yes \
 	--log-file=$(VALGRIND_LOG) \
 	./$(NAME) infile "cat" "grep teste" outfile
-	@cat $(VALGRIND_LOG) 
+	@cat $(VALGRIND_LOG)
+
+qa: all
+	@echo $(GREEN)[Running Norminette]$(COLOR_LIMITER)
+	@norminette -R CheckForbiddenSourceHeader $(MANDATORY_SOURCES_PATH) $(HEADER_PATH)
+	@echo $(GREEN)[Running Norminette on Libft]$(COLOR_LIMITER)
+	@norminette -R CheckForbiddenSourceHeader $(LIB_PATH)
+	./$(NAME) infile "cat" "grep teste" outfile
+	-./$(NAME) invalid_file "cat" "grep teste" outfile
+	-./$(NAME) infile "cat" "grep teste" /etc/passwd
+	-./$(NAME) infile "echo 1" "2" out
 
 clean:
 	@echo $(RED)[Removing Objects]$(COLOR_LIMITER)
-	@make clean -C $(LIB_PATH) --no-print-directory
-	@rm -rf $(BIN_PATH)
+	-rm -rf $(OBJ_PATH)
 
 fclean: clean
 	@echo $(RED)[Removing $(NAME) executable]$(COLOR_LIMITER)
 	@make fclean -C $(LIB_PATH) --no-print-directory
 	@rm -rf $(NAME)
-	@rm -rf $(NAME_BONUS)
 	@rm -rf $(VALGRIND_LOG)
 
 re: fclean
 	@make --no-print-directory
 
-re_bonus: fclean
-	@make bonus --no-print-directory
+debug:
+	@make WITH_DEBUG=TRUE --no-print-directory
 
-.PHONY: all clean fclean re libft bonus re_bonus valgrind
+.PHONY: all clean fclean re libft valgrind debug qa
