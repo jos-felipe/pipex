@@ -2,12 +2,10 @@
 *.o
 *.a
 *.pdf
-.vscode/
 *.d
 pipex
 pipex_bonus
 .DS_Store
-.vscode/tasks.json
-.vscode/launch.json
-infile
-outfile
+infile*
+outfile*
+valgrind.log

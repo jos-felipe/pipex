@@ -6,16 +6,18 @@
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 15:38:33 by josfelip          #+#    #+#             */
-/*   Updated: 2023/12/19 11:36:20 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/12 11:07:35 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_H
 # define PIPEX_H
 
+# include "../lib/libft/libft.h"
 # include <fcntl.h>
 # include <unistd.h>
 # include <stdio.h>
+# include <stdlib.h>
 # include <sys/wait.h>
 
 # define CMD_NOT_FOUND 127
