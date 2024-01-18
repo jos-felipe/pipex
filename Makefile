@@ -2,7 +2,7 @@ NAME = pipex
 DFLAGS = -g3
 CFLAGS = -Wall -Werror -Wextra
 ifdef WITH_DEBUG
-  CFLAGS = $(DFLAGS)
+	CFLAGS = $(DFLAGS)
 endif
 VALGRIND_LOG = valgrind.log
 
@@ -20,15 +20,18 @@ COLOR_LIMITER = "\033[0m"
 # Paths Definitions
 HEADER_PATH = ./includes
 OBJ_PATH = ./obj/
-MANDATORY_SOURCES_PATH = ./src/mandatory/
+# MANDATORY_SOURCES_PATH = ./src/mandatory/
+MANDATORY_SOURCES_PATH = ./
 
-MANDATORY_SOURCES = \
+# MANDATORY_SOURCES = \
 	clear.c \
 	commands.c \
 	error.c \
 	execute.c \
 	main.c \
 	start_files.c
+
+MANDATORY_SOURCES = main.c
 
 OBJECTS = $(addprefix $(OBJ_PATH), $(MANDATORY_SOURCES:%.c=%.o))
 
