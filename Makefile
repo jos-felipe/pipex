@@ -1,9 +1,10 @@
 NAME = pipex
+DEBUG_NAME = pipex_debug
 DFLAGS = -g3
-CFLAGS = -Wall -Werror -Wextra
-ifdef WITH_DEBUG
-	CFLAGS = $(DFLAGS)
-endif
+# CFLAGS = -Wall -Werror -Wextra
+# ifdef WITH_DEBUG
+# 	CFLAGS = $(DFLAGS)
+# endif
 VALGRIND_LOG = valgrind.log
 
 # Paths for libraries
@@ -33,12 +34,20 @@ MANDATORY_SOURCES_PATH = ./
 
 MANDATORY_SOURCES = main.c
 
+ifdef WITH_DEBUG
+  NAME = $(DEBUG_NAME)
+  CFLAGS = $(DFLAGS)
+endif
+
 OBJECTS = $(addprefix $(OBJ_PATH), $(MANDATORY_SOURCES:%.c=%.o))
 
 all: libft $(OBJ_PATH) $(NAME)
 
 libft:
 	@make --directory=$(LIB_PATH) --no-print-directory
+
+debug:
+	@make WITH_DEBUG=TRUE --no-print-directory
 
 $(OBJ_PATH):
 	@mkdir -p $(OBJ_PATH)
@@ -55,15 +64,15 @@ $(OBJ_PATH)%.o: $(MANDATORY_SOURCES_PATH)%.c $(HEADER_PATH)/pipex.h
 	$(CC) $(CFLAGS) -c $< -o $@ -I $(HEADER_PATH)
 	@echo " "
 
-valgrind: all
+valgrind: debug
 	@valgrind --leak-check=full \
 	--show-reachable=yes \
 	--track-fds=yes \
 	--show-leak-kinds=all -s \
 	--track-origins=yes \
 	--log-file=$(VALGRIND_LOG) \
-	./$(NAME) infile "cat" "grep teste" outfile
-	@cat $(VALGRIND_LOG)
+	./$(DEBUG_NAME) infile "cat" "grep teste" outfile
+	# @cat $(VALGRIND_LOG)
 
 qa: all
 	@echo $(GREEN)[Running Norminette]$(COLOR_LIMITER)
@@ -87,8 +96,5 @@ fclean: clean
 
 re: fclean
 	@make --no-print-directory
-
-debug:
-	@make WITH_DEBUG=TRUE --no-print-directory
 
 .PHONY: all clean fclean re libft valgrind debug qa

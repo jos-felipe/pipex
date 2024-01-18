@@ -5,11 +5,11 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/pipex",
+            "program": "${workspaceFolder}/pipex_debug",
             "args": [
                 "infile",
                 "cat",
-                "grep a",
+                "grep call",
                 "outfile"
             ],
             "stopAtEntry": false,
@@ -17,7 +17,7 @@
             "environment": [],
             "externalConsole": false,
             "preLaunchTask": "build",
-            "MIMode": "lldb"
+            "MIMode": "gdb"
         },
         {
             "name": "C/C++: gcc build and debug active file",

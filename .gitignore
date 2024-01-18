@@ -4,8 +4,7 @@ main
 *.a
 *.pdf
 *.d
-pipex
-pipex_bonus
+pipex*
 .DS_Store
 infile*
 outfile*
