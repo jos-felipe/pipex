@@ -8,4 +8,5 @@ pipex*
 .DS_Store
 infile*
 outfile*
+exit_status*
 valgrind.log
