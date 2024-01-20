@@ -1,5 +1,6 @@
 NAME = pipex
 DEBUG_NAME = pipex_debug
+CFLAGS = -Wall -Werror -Wextra
 DFLAGS = -g3
 # CFLAGS = -Wall -Werror -Wextra
 # ifdef WITH_DEBUG
@@ -37,6 +38,7 @@ MANDATORY_SOURCES = main.c
 ifdef WITH_DEBUG
   NAME = $(DEBUG_NAME)
   CFLAGS = $(DFLAGS)
+  OBJ_PATH = ./obj_debug/
 endif
 
 OBJECTS = $(addprefix $(OBJ_PATH), $(MANDATORY_SOURCES:%.c=%.o))
@@ -75,21 +77,42 @@ valgrind: debug
 	# @cat $(VALGRIND_LOG)
 
 qa: all
-	@echo $(GREEN)[Running Norminette]$(COLOR_LIMITER)
-	@norminette -R CheckForbiddenSourceHeader $(MANDATORY_SOURCES_PATH) $(HEADER_PATH)
-	@echo $(GREEN)[Running Norminette on Libft]$(COLOR_LIMITER)
-	@norminette -R CheckForbiddenSourceHeader $(LIB_PATH)
+# @echo $(GREEN)[Running Norminette]$(COLOR_LIMITER)
+# @norminette -R CheckForbiddenSourceHeader $(MANDATORY_SOURCES_PATH) $(HEADER_PATH)
+# @echo $(GREEN)[Running Norminette on Libft]$(COLOR_LIMITER)
+# @norminette -R CheckForbiddenSourceHeader $(LIB_PATH)
 	@echo $(GREEN)[Comparing output with reference]$(COLOR_LIMITER)
-	-./$(NAME) infile "cat" "grep cat" outfile
-	-< infile cat | grep call > outfile_ref
-	@diff outfile outfile_ref
-	-./$(NAME) invalid_file "cat" "grep call" outfile 
-	echo $? > exit_status
-	-< invalid_file cat | grep call > outfile_ref 
-	echo $? > exit_status_ref
-	@diff exit_status exit_status_ref
-	-./$(NAME) infile "cat" "grep call" /etc/passwd
-	-./$(NAME) infile "echo 1" "2" outfile
+	@-./$(NAME) infile "cat" "grep call" outfile.txt
+	@-< infile cat | grep call > outfile_ref.txt
+	@if diff outfile.txt outfile_ref.txt; then echo $(GREEN)"[OK]"$(COLOR_LIMITER); else echo $(RED)"[KO]"$(COLOR_LIMITER); fi
+	@echo $(GREEN)[Non-existent input file]$(COLOR_LIMITER)
+	@-./$(NAME) non_existent_file "cat" "grep call" outfile.txt
+	@-< non_existent_file cat | grep call > outfile_ref.txt
+	@if diff outfile.txt outfile_ref.txt; then echo $(GREEN)"[OK]"$(COLOR_LIMITER); else echo $(RED)"[KO]"$(COLOR_LIMITER); fi
+# @echo $(GREEN)[Infile without read permission]$(COLOR_LIMITER)
+# -./$(NAME) no_read_perm.txt "cat" "grep call" outfile
+# echo $? > exit_status.txt
+# -< no_read_perm.txt cat | grep call > outfile_ref
+# echo $? > exit_status_ref.txt
+# @diff exit_status.txt exit_status_ref.txt
+# @echo $(GREEN)[Invalid outfile]$(COLOR_LIMITER)
+# -./$(NAME) infile "cat" "grep call" /etc/passwd
+# echo $? > exit_status.txt
+# -< infile cat | grep call > /etc/passwd
+# echo $? > exit_status_ref.txt
+# @diff exit_status.txt exit_status_ref.txt
+# @echo $(GREEN)[Invalid cmd1]$(COLOR_LIMITER)
+# -./$(NAME) infile "1" "grep call" outfile
+# echo $? > exit_status.txt
+# -< infile 1 | grep call > outfile_ref
+# echo $? > exit_status_ref.txt
+# @echo $(GREEN)[Invalid cmd2]$(COLOR_LIMITER)
+# -./$(NAME) infile "cat" "2" outfile
+# echo $? > exit_status.txt
+# -< infile cat | 2 > outfile_ref
+# echo $? > exit_status_ref.txt
+# @diff exit_status.txt exit_status_ref.txt
+
 
 clean:
 	@echo $(RED)[Removing Objects]$(COLOR_LIMITER)

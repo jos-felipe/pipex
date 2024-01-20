@@ -117,6 +117,8 @@ int	main(int argc, char *argv[], char *envp[]) {
 	char	*outfile;
 	char	*cmd1;
 	char	*cmd2;
+	int		exit_code;
+	int		pid1;
 
 	if (argc == 5)
 	{
@@ -124,6 +126,7 @@ int	main(int argc, char *argv[], char *envp[]) {
 		cmd1 = argv[2];
 		cmd2 = argv[3];
 		outfile = argv[4];
+		exit_code = 0;
 	}
 	else
 	{
@@ -132,29 +135,29 @@ int	main(int argc, char *argv[], char *envp[]) {
 	}
 	
 	// Sanity checks on user input
-	if (access(infile, F_OK) == -1) 
-	{
-		perror(infile);
-		exit(1);
-	}
-	else if (access(infile, R_OK) == -1) 
-	{
-		perror(infile);
-		exit(1);
-	}
+	// if (access(infile, F_OK) == -1) 
+	// {
+	// 	perror(infile);
+	// 	exit_code = 1;
+	// }
+	// else if (access(infile, R_OK) == -1) 
+	// {
+	// 	perror(infile);
+	// 	exit(1);
+	// }
 	
 	// Creates the news file descriptors
 	in = open(infile, O_RDONLY);
 	if (in == -1) 
 	{
 		perror(infile);
-		exit(3);
+		exit_code = EXIT_FAILURE;
 	}
 	out = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (out == -1) 
 	{
 		perror(outfile);
-		exit(3);
+		exit_code = EXIT_FAILURE;
 	}
 	if (pipe(fd) == -1) {
 		return (1);
@@ -174,19 +177,17 @@ int	main(int argc, char *argv[], char *envp[]) {
 	char *fn1 = get_cmd_path(argv1[0], path);
 	if (fn1 == NULL) {
 		printf("Command not found: %s\n", argv1[0]);
-		return (1);
+		return (127);
 	}
 	char *fn2 = get_cmd_path(argv2[0], path);
 	if (fn2 == NULL) {
 		printf("Command not found: %s\n", argv2[0]);
-		return (1);
+		return (127);
 	}
 	free(path);
 
-	// char *foo[] = {fn1, "infile", NULL};
-	// execve(fn1, foo, envp);
 	// execute cmd1
-	int pid1 = fork();
+	pid1 = fork();
 	if (pid1 < 0) {
 		printf("Fork failed\n");
 		return 2;
@@ -199,9 +200,10 @@ int	main(int argc, char *argv[], char *envp[]) {
 		execve(fn1, argv1, envp);
 	}
 	free(argv1);
+
+	
 	
 	// execute cmd2
-	printf("Executing %s\n", argv2[1]);
 	int pid2 = fork();
 	if (pid2 < 0) {
 		printf("Fork failed\n");
@@ -223,5 +225,5 @@ int	main(int argc, char *argv[], char *envp[]) {
 
 	waitpid(pid1, NULL, 0);
 	waitpid(pid2, NULL, 0);
-	return 0;
+	return (exit_code);
 }

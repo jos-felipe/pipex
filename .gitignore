@@ -3,7 +3,7 @@ main
 *.o
 *.a
 *.pdf
-*.d
+*.txt
 pipex*
 .DS_Store
 infile*
