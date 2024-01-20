@@ -201,6 +201,7 @@ int	main(int argc, char *argv[], char *envp[]) {
 	free(argv1);
 	
 	// execute cmd2
+	printf("Executing %s\n", argv2[1]);
 	int pid2 = fork();
 	if (pid2 < 0) {
 		printf("Fork failed\n");

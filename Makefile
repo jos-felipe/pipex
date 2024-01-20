@@ -79,10 +79,17 @@ qa: all
 	@norminette -R CheckForbiddenSourceHeader $(MANDATORY_SOURCES_PATH) $(HEADER_PATH)
 	@echo $(GREEN)[Running Norminette on Libft]$(COLOR_LIMITER)
 	@norminette -R CheckForbiddenSourceHeader $(LIB_PATH)
-	./$(NAME) infile "cat" "grep teste" outfile
-	-./$(NAME) invalid_file "cat" "grep teste" outfile
-	-./$(NAME) infile "cat" "grep teste" /etc/passwd
-	-./$(NAME) infile "echo 1" "2" out
+	@echo $(GREEN)[Comparing output with reference]$(COLOR_LIMITER)
+	-./$(NAME) infile "cat" "grep cat" outfile
+	-< infile cat | grep call > outfile_ref
+	@diff outfile outfile_ref
+	-./$(NAME) invalid_file "cat" "grep call" outfile 
+	echo $? > exit_status
+	-< invalid_file cat | grep call > outfile_ref 
+	echo $? > exit_status_ref
+	@diff exit_status exit_status_ref
+	-./$(NAME) infile "cat" "grep call" /etc/passwd
+	-./$(NAME) infile "echo 1" "2" outfile
 
 clean:
 	@echo $(RED)[Removing Objects]$(COLOR_LIMITER)
