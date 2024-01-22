@@ -165,6 +165,7 @@ int	main(int argc, char *argv[], char *envp[]) {
 	{
 		waitpid(pipex.pid2, &pipex.exit_code, 0);
 		pipex.exit_code = get_exit_status(pipex.exit_code);
-	}	
+	}
+	free_memory(pipex.lst_memory);
 	exit(pipex.exit_code);
 }
