@@ -1,17 +1,11 @@
-#include "./lib/libft/libft.h"
-#include <fcntl.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/wait.h>
+#include "./includes/pipex.h"
 
 int	get_exit_status(int exit_status)
 {
 	return (((exit_status & 0xff00)) >> 8);
 }
 
-// Looks for PATH in envp
+// Looks for PATH pipex.fd_in envp
 char	*get_path(char *envp[]) 
 {
 	int		i;
@@ -30,7 +24,7 @@ char	*get_path(char *envp[])
 	return (NULL);
 }
 
-// Checks if a cmd exists in PATH
+// Checks if a cmd exists pipex.fd_in PATH
 int	check_cmd(char *cmd, char *path)
 {
 	char	**paths;
@@ -109,90 +103,85 @@ void	ft_print_array(char *const *array)
 	i = 0;
 	while (array[i])
 	{
-		printf("%s\n", array[i]);
+		ft_printf("%s\n", array[i]);
 		i++;
 	}
 }
 
 int	main(int argc, char *argv[], char *envp[]) {
-	int		in;
-	int		out;
-	int		fd[2];
-	char	*infile;
-	char	*outfile;
-	char	*cmd1;
 	char	*cmd2;
 	int		exit_code;
 	int		pid1;
 	int 	pid2;
+	t_pipex	pipex;
 
 	if (argc == 5)
 	{
-		infile = argv[1];
-		cmd1 = argv[2];
+		pipex.infile = argv[1];
+		pipex.cmd1 = argv[2];
 		cmd2 = argv[3];
-		outfile = argv[4];
+		pipex.outfile = argv[4];
 		exit_code = 0;
 		pid1 = -1;
 		pid2 = -1;
 	}
 	else
 	{
-		printf("Usage: ./%s infile cmd1 cmd2 outfile\n", argv[0]);
+		ft_printf("Usage:\n%s infile cmd1 cmd2 outfile\n", argv[0]);
 		exit(EXIT_FAILURE);
 	}
 	
 	// Creates the news file descriptors
-	in = open(infile, O_RDONLY);
-	if (in == -1) 
+	pipex.fd_in = open(pipex.infile, O_RDONLY);
+	if (pipex.fd_in == -1) 
 	{
-		perror(infile);
+		perror(pipex.infile);
 	}
-	out = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (out == -1) 
+	pipex.fd_out = open(pipex.outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (pipex.fd_out == -1) 
 	{
-		perror(outfile);
+		perror(pipex.outfile);
 	}
-	if (pipe(fd) == -1) {
-		perror(outfile);
+	if (pipe(pipex.fd_pipe) == -1) {
+		perror(pipex.outfile);
 	}
 
-	// Looks for PATH in envp
+	// Looks for PATH pipex.fd_in envp
 	char *path = get_path(envp);
 	if (path == NULL) {
-		printf("PATH not found\n");
+		ft_printf("PATH not found\n");
 		return (1);
 	}
 	
-	char **argv1 = split_cmd(cmd1);
+	char **argv1 = split_cmd(pipex.cmd1);
 	char **argv2 = split_cmd(cmd2);
 
-	// Checks if a cmd exists in PATH
+	// Checks if a cmd exists pipex.fd_in PATH
 	char *fn1 = get_cmd_path(argv1[0], path);
 	if (fn1 == NULL) {
-		printf("Command not found: %s\n", argv1[0]);
+		ft_printf("Command not found: %s\n", argv1[0]);
 	}
 	char *fn2 = get_cmd_path(argv2[0], path);
 	if (fn2 == NULL) {
-		printf("Command not found: %s\n", argv2[0]);
+		ft_printf("Command not found: %s\n", argv2[0]);
 		exit_code = 127;
 	}
 	free(path);
 
 	// execute cmd1
-	if (in > -1 && fn1 && fn2 && out > -1)
+	if (pipex.fd_in > -1 && fn1 && fn2 && pipex.fd_out > -1)
 	{
 		pid1 = fork();
 		if (pid1 < 0) 
 		{
-			printf("Fork failed\n");
+			ft_printf("Fork failed\n");
 			return 2;
 		}
 		if (pid1 == 0) {
-			dup2(in, STDIN_FILENO);
-			dup2(fd[1], STDOUT_FILENO);
-			close(fd[0]);
-			close(fd[1]);
+			dup2(pipex.fd_in, STDIN_FILENO);
+			dup2(pipex.fd_pipe[1], STDOUT_FILENO);
+			close(pipex.fd_pipe[0]);
+			close(pipex.fd_pipe[1]);
 			execve(fn1, argv1, envp);
 		}
 	}
@@ -203,23 +192,23 @@ int	main(int argc, char *argv[], char *envp[]) {
 	{
 		pid2 = fork();
 		if (pid2 < 0) {
-			printf("Fork failed\n");
+			ft_printf("Fork failed\n");
 			return 2;
 		}
 		if (pid2 == 0) {
-			dup2(fd[0], STDIN_FILENO);
-			dup2(out, STDOUT_FILENO);
-			close(fd[0]);
-			close(fd[1]);
+			dup2(pipex.fd_pipe[0], STDIN_FILENO);
+			dup2(pipex.fd_out, STDOUT_FILENO);
+			close(pipex.fd_pipe[0]);
+			close(pipex.fd_pipe[1]);
 			execve(fn2, argv2, envp);
 		}
 	}
 	free(argv2);
 
-	close(in);
-	close(out);
-	close(fd[0]);
-	close(fd[1]);
+	close(pipex.fd_in);
+	close(pipex.fd_out);
+	close(pipex.fd_pipe[0]);
+	close(pipex.fd_pipe[1]);
 
 	if (pid2 != -1)
 	{
