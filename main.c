@@ -6,6 +6,11 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
+int	get_exit_status(int exit_status)
+{
+	return (((exit_status & 0xff00)) >> 8);
+}
+
 // Looks for PATH in envp
 char	*get_path(char *envp[]) 
 {
@@ -119,6 +124,7 @@ int	main(int argc, char *argv[], char *envp[]) {
 	char	*cmd2;
 	int		exit_code;
 	int		pid1;
+	int 	pid2;
 
 	if (argc == 5)
 	{
@@ -127,6 +133,8 @@ int	main(int argc, char *argv[], char *envp[]) {
 		cmd2 = argv[3];
 		outfile = argv[4];
 		exit_code = 0;
+		pid1 = -1;
+		pid2 = -1;
 	}
 	else
 	{
@@ -134,33 +142,19 @@ int	main(int argc, char *argv[], char *envp[]) {
 		exit(EXIT_FAILURE);
 	}
 	
-	// Sanity checks on user input
-	// if (access(infile, F_OK) == -1) 
-	// {
-	// 	perror(infile);
-	// 	exit_code = 1;
-	// }
-	// else if (access(infile, R_OK) == -1) 
-	// {
-	// 	perror(infile);
-	// 	exit(1);
-	// }
-	
 	// Creates the news file descriptors
 	in = open(infile, O_RDONLY);
 	if (in == -1) 
 	{
 		perror(infile);
-		exit_code = EXIT_FAILURE;
 	}
 	out = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (out == -1) 
 	{
 		perror(outfile);
-		exit_code = EXIT_FAILURE;
 	}
 	if (pipe(fd) == -1) {
-		return (1);
+		perror(outfile);
 	}
 
 	// Looks for PATH in envp
@@ -177,44 +171,48 @@ int	main(int argc, char *argv[], char *envp[]) {
 	char *fn1 = get_cmd_path(argv1[0], path);
 	if (fn1 == NULL) {
 		printf("Command not found: %s\n", argv1[0]);
-		return (127);
 	}
 	char *fn2 = get_cmd_path(argv2[0], path);
 	if (fn2 == NULL) {
 		printf("Command not found: %s\n", argv2[0]);
-		return (127);
+		exit_code = 127;
 	}
 	free(path);
 
 	// execute cmd1
-	pid1 = fork();
-	if (pid1 < 0) {
-		printf("Fork failed\n");
-		return 2;
-	}
-	if (pid1 == 0) {
-		dup2(in, STDIN_FILENO);
-		dup2(fd[1], STDOUT_FILENO);
-		close(fd[0]);
-		close(fd[1]);
-		execve(fn1, argv1, envp);
+	if (in > -1 && fn1 && fn2 && out > -1)
+	{
+		pid1 = fork();
+		if (pid1 < 0) 
+		{
+			printf("Fork failed\n");
+			return 2;
+		}
+		if (pid1 == 0) {
+			dup2(in, STDIN_FILENO);
+			dup2(fd[1], STDOUT_FILENO);
+			close(fd[0]);
+			close(fd[1]);
+			execve(fn1, argv1, envp);
+		}
 	}
 	free(argv1);
 
-	
-	
 	// execute cmd2
-	int pid2 = fork();
-	if (pid2 < 0) {
-		printf("Fork failed\n");
-		return 2;
-	}
-	if (pid2 == 0) {
-		dup2(fd[0], STDIN_FILENO);
-		dup2(out, STDOUT_FILENO);
-		close(fd[0]);
-		close(fd[1]);
-		execve(fn2, argv2, envp);
+	if (fn2)
+	{
+		pid2 = fork();
+		if (pid2 < 0) {
+			printf("Fork failed\n");
+			return 2;
+		}
+		if (pid2 == 0) {
+			dup2(fd[0], STDIN_FILENO);
+			dup2(out, STDOUT_FILENO);
+			close(fd[0]);
+			close(fd[1]);
+			execve(fn2, argv2, envp);
+		}
 	}
 	free(argv2);
 
@@ -223,7 +221,10 @@ int	main(int argc, char *argv[], char *envp[]) {
 	close(fd[0]);
 	close(fd[1]);
 
-	waitpid(pid1, NULL, 0);
-	waitpid(pid2, NULL, 0);
-	return (exit_code);
+	if (pid2 != -1)
+	{
+		waitpid(pid2, &exit_code, 0);
+		exit_code = get_exit_status(exit_code);
+	}	
+	exit(exit_code);
 }

@@ -7,9 +7,9 @@
             "request": "launch",
             "program": "${workspaceFolder}/pipex_debug",
             "args": [
-                "no_read_perm.txt",
+                "infile",
                 "cat",
-                "grep call",
+                "cmd2",
                 "outfile"
             ],
             "stopAtEntry": false,
