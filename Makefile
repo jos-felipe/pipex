@@ -76,47 +76,21 @@ valgrind: debug
 	./$(DEBUG_NAME) infile "cat" "grep teste" outfile
 	# @cat $(VALGRIND_LOG)
 
-qa: all
-# @echo $(GREEN)[Running Norminette]$(COLOR_LIMITER)
-# @norminette -R CheckForbiddenSourceHeader $(MANDATORY_SOURCES_PATH) $(HEADER_PATH)
-# @echo $(GREEN)[Running Norminette on Libft]$(COLOR_LIMITER)
-# @norminette -R CheckForbiddenSourceHeader $(LIB_PATH)
-	@echo $(GREEN)[Comparing output with reference]$(COLOR_LIMITER)
-	@-./$(NAME) infile "cat" "grep call" outfile.txt
-	@-< infile cat | grep call > outfile_ref.txt
-	@if diff outfile.txt outfile_ref.txt; then echo $(GREEN)"[OK]"$(COLOR_LIMITER); else echo $(RED)"[KO]"$(COLOR_LIMITER); fi
-	@echo $(GREEN)[Non-existent input file]$(COLOR_LIMITER)
-	@-./$(NAME) non_existent_file "cat" "grep call" outfile.txt
-	@-< non_existent_file cat | grep call > outfile_ref.txt
-	@if diff outfile.txt outfile_ref.txt; then echo $(GREEN)"[OK]"$(COLOR_LIMITER); else echo $(RED)"[KO]"$(COLOR_LIMITER); fi
-# @echo $(GREEN)[Infile without read permission]$(COLOR_LIMITER)
-# -./$(NAME) no_read_perm.txt "cat" "grep call" outfile
-# echo $? > exit_status.txt
-# -< no_read_perm.txt cat | grep call > outfile_ref
-# echo $? > exit_status_ref.txt
-# @diff exit_status.txt exit_status_ref.txt
-# @echo $(GREEN)[Invalid outfile]$(COLOR_LIMITER)
-# -./$(NAME) infile "cat" "grep call" /etc/passwd
-# echo $? > exit_status.txt
-# -< infile cat | grep call > /etc/passwd
-# echo $? > exit_status_ref.txt
-# @diff exit_status.txt exit_status_ref.txt
-# @echo $(GREEN)[Invalid cmd1]$(COLOR_LIMITER)
-# -./$(NAME) infile "1" "grep call" outfile
-# echo $? > exit_status.txt
-# -< infile 1 | grep call > outfile_ref
-# echo $? > exit_status_ref.txt
-# @echo $(GREEN)[Invalid cmd2]$(COLOR_LIMITER)
-# -./$(NAME) infile "cat" "2" outfile
-# echo $? > exit_status.txt
-# -< infile cat | 2 > outfile_ref
-# echo $? > exit_status_ref.txt
-# @diff exit_status.txt exit_status_ref.txt
+nor: 
+	@echo $(GREEN)[Running Norminette]$(COLOR_LIMITER)
+	@norminette -R CheckForbiddenSourceHeader $(MANDATORY_SOURCES_PATH) $(HEADER_PATH)
+	@echo $(GREEN)[Running Norminette on Libft]$(COLOR_LIMITER)
+	@norminette -R CheckForbiddenSourceHeader $(LIB_PATH)
 
+tester: all
+	@echo $(GREEN)[Running tests]$(COLOR_LIMITER)
+	@wget https://raw.githubusercontent.com/jos-felipe/pipex/master/tester.sh
 
 clean:
 	@echo $(RED)[Removing Objects]$(COLOR_LIMITER)
 	-rm -rf $(OBJ_PATH)
+	@echo $(RED)[Removing test files]$(COLOR_LIMITER)
+	-rm -rf ./tmp
 
 fclean: clean
 	@echo $(RED)[Removing $(NAME) executable]$(COLOR_LIMITER)
@@ -127,4 +101,4 @@ fclean: clean
 re: fclean
 	@make --no-print-directory
 
-.PHONY: all clean fclean re libft valgrind debug qa
+.PHONY: all clean fclean re libft valgrind debug tester nor qa
