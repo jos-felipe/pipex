@@ -2,6 +2,7 @@ NAME = pipex
 DEBUG_NAME = pipex_debug
 CFLAGS = -Wall -Werror -Wextra
 DFLAGS = -g3
+CC = gcc
 VALGRIND_LOG = valgrind.log
 
 # Paths for libraries
@@ -17,21 +18,11 @@ CYAN = "\033[36;1;3;208m"
 WHITE = "\033[37;1;4m"
 COLOR_LIMITER = "\033[0m"
 
-# Paths Definitions
+# Paths definitions
 HEADER_PATH = ./includes
 OBJ_PATH = ./obj/
-# MANDATORY_SOURCES_PATH = ./src/mandatory/
-MANDATORY_SOURCES_PATH = ./
-
-# MANDATORY_SOURCES = \
-	clear.c \
-	commands.c \
-	error.c \
-	execute.c \
-	main.c \
-	start_files.c
-
-MANDATORY_SOURCES = main.c
+SOURCES_PATH = ./src/
+SOURCES = main.c inits.c utils.c memory.c
 
 ifdef WITH_DEBUG
   NAME = $(DEBUG_NAME)
@@ -39,7 +30,7 @@ ifdef WITH_DEBUG
   OBJ_PATH = ./obj_debug/
 endif
 
-OBJECTS = $(addprefix $(OBJ_PATH), $(MANDATORY_SOURCES:%.c=%.o))
+OBJECTS = $(addprefix $(OBJ_PATH), $(SOURCES:%.c=%.o))
 
 all: libft libftprintf $(OBJ_PATH) $(NAME)
 
@@ -62,7 +53,7 @@ $(NAME): $(OBJECTS)
 	@echo $(CYAN)"----------------------------------------------"$(COLOR_LIMITER)
 	@echo " "
 
-$(OBJ_PATH)%.o: $(MANDATORY_SOURCES_PATH)%.c $(HEADER_PATH)/pipex.h
+$(OBJ_PATH)%.o: $(SOURCES_PATH)%.c $(HEADER_PATH)/pipex.h
 	@echo $(GREEN)[Compiling]$(COLOR_LIMITER) $(WHITE)$(notdir $(<))...$(COLOR_LIMITER)
 	$(CC) $(CFLAGS) -c $< -o $@ -I $(HEADER_PATH)
 	@echo " "
@@ -79,7 +70,7 @@ valgrind: debug
 
 nor: 
 	@echo $(GREEN)[Running Norminette]$(COLOR_LIMITER)
-	@norminette -R CheckForbiddenSourceHeader $(MANDATORY_SOURCES_PATH) $(HEADER_PATH)
+	@norminette -R CheckForbiddenSourceHeader $(SOURCES_PATH) $(HEADER_PATH)
 	@echo $(GREEN)[Running Norminette on Libft]$(COLOR_LIMITER)
 	@norminette -R CheckForbiddenSourceHeader $(LIB_PATH)
 
