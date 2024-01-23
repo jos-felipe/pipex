@@ -6,7 +6,7 @@
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 10:28:45 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/23 10:44:49 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/23 14:59:10 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ void	validate_user_inputs(int argc, char *argv[], t_pipex *pipex)
 	}
 }
 
-// safe exit
 void	safe_exit(t_pipex *pipex)
 {
 	if (pipex->fd_in != -1)
@@ -37,12 +36,19 @@ void	safe_exit(t_pipex *pipex)
 	if (pipex->fd_pipe[1] != -1)
 		close(pipex->fd_pipe[1]);
 	if (pipex->pid1 != -1)
-		waitpid(pipex->pid1, &pipex->status, 0);
+		;
 	if (pipex->pid2 != -1)
+	{
 		waitpid(pipex->pid2, &pipex->status, 0);
+		pipex->status = get_exit_status(pipex->status);
+	}	
 	if (pipex->lst_memory != NULL)
 		free_heap(pipex->lst_memory);
 	if (pipex->status != 0)
 		exit(pipex->status);
 	exit(EXIT_SUCCESS);
+}
+int	get_exit_status(int exit_status)
+{
+	return ((exit_status & 0xff00) >> 8);
 }
