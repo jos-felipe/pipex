@@ -94,13 +94,7 @@ void	ft_print_array(char *const *array)
 int	main(int argc, char *argv[], char *envp[]) {
 	t_pipex	pipex;
 
-	if (argc == 5)
-		init(&pipex, argv);
-	else
-	{
-		ft_printf("Usage:\n%s infile cmd1 cmd2 outfile\n", argv[0]);
-		exit(EXIT_FAILURE);
-	}
+	
 	init_fd(&pipex);
 	init_envp(&pipex, envp);
 	
@@ -115,7 +109,7 @@ int	main(int argc, char *argv[], char *envp[]) {
 	char *fn2 = get_cmd_path(argv2[0], pipex.path);
 	if (fn2 == NULL) {
 		ft_printf("Command not found: %s\n", argv2[0]);
-		pipex.exit_code = 127;
+		pipex.status = 127;
 	}
 	free(pipex.path);
 
@@ -163,9 +157,9 @@ int	main(int argc, char *argv[], char *envp[]) {
 
 	if (pipex.pid2 != -1)
 	{
-		waitpid(pipex.pid2, &pipex.exit_code, 0);
-		pipex.exit_code = get_exit_status(pipex.exit_code);
+		waitpid(pipex.pid2, &pipex.status, 0);
+		pipex.status = get_exit_status(pipex.status);
 	}
 	free_memory(pipex.lst_memory);
-	exit(pipex.exit_code);
+	exit(pipex.status);
 }

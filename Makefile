@@ -22,7 +22,7 @@ COLOR_LIMITER = "\033[0m"
 HEADER_PATH = ./includes
 OBJ_PATH = ./obj/
 SOURCES_PATH = ./src/
-SOURCES = main.c inits.c utils.c memory.c
+SOURCES = heap.c  main.c  mandatory  safety.c  stack.c  utils.c
 
 ifdef WITH_DEBUG
   NAME = $(DEBUG_NAME)

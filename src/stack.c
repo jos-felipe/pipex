@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   inits.c                                            :+:      :+:    :+:   */
+/*   stack.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:19:08 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/22 20:06:05 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/23 10:41:16 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,10 @@ void	init(t_pipex *pipex, char *argv[])
 	pipex->fn1 = NULL;
 	pipex->fn2 = NULL;
 	pipex->lst_memory = NULL;
-	pipex->exit_code = 0;
+	pipex->status = 0;
 }
 
-void	init_fd(t_pipex *pipex)
+void	connect_fds(t_pipex *pipex)
 {
 	pipex->fd_in = open(pipex->infile, O_RDONLY);
 	if (pipex->fd_in == -1)
@@ -43,17 +43,4 @@ void	init_fd(t_pipex *pipex)
 		perror(pipex->outfile);
 	if (pipe(pipex->fd_pipe) == -1)
 		perror(pipex->outfile);
-}
-void	init_envp(t_pipex *pipex, char *envp[])
-{
-	pipex->path = get_path(envp);
-	if (pipex->path == NULL) {
-		ft_printf("PATH not found\n");
-		exit(EXIT_FAILURE);
-	}
-	pipex->lst_memory = ft_lstnew(pipex->path);
-	if (pipex->lst_memory == NULL) {
-		ft_printf("Memory allocation failed\n");
-		exit(EXIT_FAILURE);
-	}
 }

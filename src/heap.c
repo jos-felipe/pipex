@@ -1,26 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   memory.c                                           :+:      :+:    :+:   */
+/*   heap.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 20:11:53 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/22 20:25:51 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/23 10:35:56 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-void	free_memory(t_list *lst_memory)
+void	process_envp(t_pipex *pipex, char *envp[])
 {
-	t_list	*tmp;
-
-	while (lst_memory)
+	pipex->path = get_path(envp);
+	if (pipex->path == NULL) 
 	{
-		tmp = lst_memory;
-		lst_memory = lst_memory->next;
-		free(tmp->content);
-		free(tmp);
+		ft_printf("PATH not found\n");
+		exit(EXIT_FAILURE);
+	}
+	pipex->lst_memory = ft_lstnew(pipex->path);
+	if (pipex->lst_memory == NULL) {
+		ft_printf("Memory allocation failed\n");
+		exit(EXIT_FAILURE);
 	}
 }
