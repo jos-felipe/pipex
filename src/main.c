@@ -94,21 +94,19 @@ void	ft_print_array(char *const *array)
 int	main(int argc, char *argv[], char *envp[]) {
 	t_pipex	pipex;
 
-	
-	init_fd(&pipex);
-	init_envp(&pipex, envp);
-	
-	char **argv1 = split_cmd(pipex.cmd1);
-	char **argv2 = split_cmd(pipex.cmd2);
+	validate_user_inputs(argc, argv, &pipex);
+	connect_fds(&pipex);
+	process_envp(&pipex, envp);
+	process_cmds(&pipex);
 
 	// Checks if a cmd exists pipex.fd_in PATH
-	char *fn1 = get_cmd_path(argv1[0], pipex.path);
+	char *fn1 = get_cmd_path(pipex.argv1[0], pipex.path);
 	if (fn1 == NULL) {
-		ft_printf("Command not found: %s\n", argv1[0]);
+		ft_printf("Command not found: %s\n", pipex.argv1[0]);
 	}
-	char *fn2 = get_cmd_path(argv2[0], pipex.path);
+	char *fn2 = get_cmd_path(pipex.argv2[0], pipex.path);
 	if (fn2 == NULL) {
-		ft_printf("Command not found: %s\n", argv2[0]);
+		ft_printf("Command not found: %s\n", pipex.argv2[0]);
 		pipex.status = 127;
 	}
 	free(pipex.path);
@@ -127,10 +125,10 @@ int	main(int argc, char *argv[], char *envp[]) {
 			dup2(pipex.fd_pipe[1], STDOUT_FILENO);
 			close(pipex.fd_pipe[0]);
 			close(pipex.fd_pipe[1]);
-			execve(fn1, argv1, envp);
+			execve(fn1, pipex.argv1, envp);
 		}
 	}
-	free(argv1);
+	free(pipex.argv1);
 
 	// execute cmd2
 	if (fn2)
@@ -145,10 +143,10 @@ int	main(int argc, char *argv[], char *envp[]) {
 			dup2(pipex.fd_out, STDOUT_FILENO);
 			close(pipex.fd_pipe[0]);
 			close(pipex.fd_pipe[1]);
-			execve(fn2, argv2, envp);
+			execve(fn2, pipex.argv2, envp);
 		}
 	}
-	free(argv2);
+	free(pipex.argv2);
 
 	close(pipex.fd_in);
 	close(pipex.fd_out);

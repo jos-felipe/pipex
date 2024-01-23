@@ -6,7 +6,7 @@
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 17:04:24 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/23 10:35:42 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/23 10:46:56 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,5 +48,9 @@ void	process_envp(t_pipex *pipex, char *envp[]);
 char	*get_path(char *envp[]);
 t_list	*ft_lstnew(void *content);
 void	free_heap(t_list *lst_memory);
+
+//  safety.c functions prototype
+void	validate_user_inputs(int argc, char *argv[], t_pipex *pipex);
+void	safe_exit(t_pipex *pipex);
 
 #endif

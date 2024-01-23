@@ -6,13 +6,13 @@
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 10:28:45 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/23 10:38:15 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/23 10:44:49 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-void	safety(int argc, char *argv[], t_pipex *pipex)
+void	validate_user_inputs(int argc, char *argv[], t_pipex *pipex)
 {
 	
 	if (argc == 5)
