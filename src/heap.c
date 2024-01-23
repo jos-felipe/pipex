@@ -6,7 +6,7 @@
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 20:11:53 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/23 11:29:10 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/23 11:55:52 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,3 +47,4 @@ void	process_cmds(t_pipex *pipex)
 	}
 	ft_lstadd_back(&pipex->lst_memory, ft_lstnew(pipex->argv2));
 }
+

@@ -6,7 +6,7 @@
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 19:19:25 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/23 11:05:58 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/23 12:15:18 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,3 +55,31 @@ void	free_heap(t_list *lst_memory)
 	}
 }
 
+char	*ft_whereis(char *cmd, char *path)
+{
+	char	**paths;
+	char	*tmp;
+	char	*fn;
+	int		i;
+
+	if (access(cmd, F_OK) == 0)
+		return (ft_strdup(cmd));
+	paths = ft_split(path, ':');
+	i = 0;
+	while (paths[i])
+	{
+		tmp = ft_strjoin(paths[i], "/");
+		fn = ft_strjoin(tmp, cmd);
+		if (access(fn, X_OK) == 0)
+		{
+			free(tmp);
+			free(paths);
+			return (fn);
+		}
+		free(fn);
+		free(tmp);
+		i++;
+	}
+	free(paths);
+	return (NULL);
+}

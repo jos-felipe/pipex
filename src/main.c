@@ -7,61 +7,6 @@ int	get_exit_status(int exit_status)
 
 
 
-// Checks if a cmd exists pipex.fd_in PATH
-int	check_cmd(char *cmd, char *path)
-{
-	char	**paths;
-	char	*tmp;
-	int		i;
-
-	if (access(cmd, F_OK) == 0)
-		return (1);
-	paths = ft_split(path, ':');
-	i = 0;
-	while (paths[i])
-	{
-		tmp = ft_strjoin(paths[i], "/");
-		tmp = ft_strjoin(tmp, cmd);
-		if (access(tmp, F_OK) == 0)
-		{
-			free(tmp);
-			free(paths);
-			return (1);
-		}
-		free(tmp);
-		i++;
-	}
-	free(paths);
-	return (0);
-}
-// Get cmd path from PATH
-char	*get_cmd_path(char *cmd, char *path)
-{
-	char	**paths;
-	char	*tmp;
-	int		i;
-
-	if (access(cmd, F_OK) == 0)
-		return (ft_strdup(cmd));
-	paths = ft_split(path, ':');
-	i = 0;
-	while (paths[i])
-	{
-		tmp = ft_strjoin(paths[i], "/");
-		tmp = ft_strjoin(tmp, cmd);
-		if (access(tmp, F_OK) == 0)
-		{
-			free(paths);
-			return (tmp);
-		}
-		free(tmp);
-		i++;
-	}
-	free(paths);
-	return (NULL);
-}
-
-
 // Splits a cmd into an array of strings
 char	**split_cmd(char *cmd)
 {
