@@ -43,21 +43,10 @@ int	main(int argc, char *argv[], char *envp[]) {
 	connect_fds(&pipex);
 	process_envp(&pipex, envp);
 	process_cmds(&pipex);
-
-	// Checks if a cmd exists pipex.fd_in PATH
-	char *fn1 = get_cmd_path(pipex.argv1[0], pipex.path);
-	if (fn1 == NULL) {
-		ft_printf("Command not found: %s\n", pipex.argv1[0]);
-	}
-	char *fn2 = get_cmd_path(pipex.argv2[0], pipex.path);
-	if (fn2 == NULL) {
-		ft_printf("Command not found: %s\n", pipex.argv2[0]);
-		pipex.status = 127;
-	}
-	free(pipex.path);
+	process_fns(&pipex);
 
 	// execute cmd1
-	if (pipex.fd_in > -1 && fn1 && fn2 && pipex.fd_out > -1)
+	if (pipex.fd_in > -1 && pipex.fn1 && pipex.fn2 && pipex.fd_out > -1)
 	{
 		pipex.pid1 = fork();
 		if (pipex.pid1 < 0) 
@@ -70,13 +59,13 @@ int	main(int argc, char *argv[], char *envp[]) {
 			dup2(pipex.fd_pipe[1], STDOUT_FILENO);
 			close(pipex.fd_pipe[0]);
 			close(pipex.fd_pipe[1]);
-			execve(fn1, pipex.argv1, envp);
+			execve(pipex.fn1, pipex.argv1, envp);
 		}
 	}
 	free(pipex.argv1);
 
 	// execute cmd2
-	if (fn2)
+	if (pipex.fn2)
 	{
 		pipex.pid2 = fork();
 		if (pipex.pid2 < 0) {
@@ -88,7 +77,7 @@ int	main(int argc, char *argv[], char *envp[]) {
 			dup2(pipex.fd_out, STDOUT_FILENO);
 			close(pipex.fd_pipe[0]);
 			close(pipex.fd_pipe[1]);
-			execve(fn2, pipex.argv2, envp);
+			execve(pipex.fn2, pipex.argv2, envp);
 		}
 	}
 	free(pipex.argv2);
@@ -106,3 +95,4 @@ int	main(int argc, char *argv[], char *envp[]) {
 	free_memory(pipex.lst_memory);
 	exit(pipex.status);
 }
+
