@@ -2,7 +2,6 @@ NAME = pipex
 DEBUG_NAME = pipex_debug
 CFLAGS = -Wall -Werror -Wextra
 DFLAGS = -g3
-CC = gcc
 VALGRIND_LOG = valgrind.log
 
 # Paths for libraries
@@ -21,6 +20,7 @@ COLOR_LIMITER = "\033[0m"
 # Paths definitions
 HEADER_PATH = ./includes
 OBJ_PATH = ./obj/
+TESTS_PATH = ./tests/
 SOURCES_PATH = ./src/
 SOURCES = heap.c  main.c  safety.c  shell.c  stack.c  utils.c
 
@@ -59,14 +59,10 @@ $(OBJ_PATH)%.o: $(SOURCES_PATH)%.c $(HEADER_PATH)/pipex.h
 	@echo " "
 
 valgrind: debug
-	@valgrind --leak-check=full \
-	--show-reachable=yes \
-	--track-fds=yes \
-	--show-leak-kinds=all -s \
-	--track-origins=yes \
-	--log-file=$(VALGRIND_LOG) \
-	./$(DEBUG_NAME) ./tests/infile "cat" "grep pipe" ./tests/outfile
-	@cat $(VALGRIND_LOG)
+	@echo $(GREEN)[Running memory checks]$(COLOR_LIMITER)
+	@wget https://raw.githubusercontent.com/jos-felipe/pipex/master/memory_checker.sh > /dev/null 2>&1
+	@chmod +x checker.sh
+	@./checker.sh
 
 nor: 
 	@echo $(GREEN)[Running Norminette]$(COLOR_LIMITER)
@@ -76,7 +72,7 @@ nor:
 
 tester: all
 	@echo $(GREEN)[Running tests]$(COLOR_LIMITER)
-	@wget https://raw.githubusercontent.com/jos-felipe/pipex/self/tester.sh > /dev/null 2>&1
+	@wget https://raw.githubusercontent.com/jos-felipe/pipex/master/tester.sh > /dev/null 2>&1
 	@chmod +x tester.sh
 	@./tester.sh
 
@@ -84,7 +80,7 @@ clean:
 	@echo $(RED)[Removing Objects]$(COLOR_LIMITER)
 	-rm -rf $(OBJ_PATH)
 	@echo $(RED)[Removing test files]$(COLOR_LIMITER)
-	-rm -rf ./tmp
+	-rm -rf $(TESTS_PATH)
 
 fclean: clean
 	@echo $(RED)[Removing $(NAME) executable]$(COLOR_LIMITER)

@@ -4,7 +4,7 @@
 
 # Name of the program
 NAME=./pipex
-TMP=./tmp
+TMP=./tests
 
 # Colors Definition 
 GREEN="\033[32;1m"
