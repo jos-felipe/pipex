@@ -6,7 +6,7 @@
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 17:04:24 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/23 15:01:50 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/24 10:53:35 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,15 +41,32 @@ typedef struct s_pipex
 	int		status;
 }				t_pipex;
 
-void	init(t_pipex *pipex, char *argv[]);
-void	connect_fds(t_pipex *pipex);
+//  heap.c functions prototype
 void	process_envp(t_pipex *pipex, char *envp[]);
-char	*get_path(char *envp[]);
-t_list	*ft_lstnew(void *content);
-void	free_heap(t_list *lst_memory);
+void	process_cmds(t_pipex *pipex);
+void 	process_fns(t_pipex *pipex);
+void	free_split(char **split);
+
+//  main.c functions prototype
+int	main(int argc, char *argv[], char *envp[]);
 
 //  safety.c functions prototype
 void	validate_user_inputs(int argc, char *argv[], t_pipex *pipex);
 void	safe_exit(t_pipex *pipex);
+int	get_exit_status(int exit_status);
+
+//  shell.c functions prototype
+void	tty1(t_pipex *pipex, char *envp[]);
+void	tty2(t_pipex *pipex, char *envp[]);
+
+//  stack.c functions prototype
+void	init(t_pipex *pipex, char *argv[]);
+void	connect_fds(t_pipex *pipex);
+
+//  utils.c functions prototype
+char	*get_path(char *envp[]);
+t_list	*ft_lstnew(void *content);
+void	free_heap(t_list *lst_memory);
+char	*ft_whereis(char *cmd, char *path);
 
 #endif

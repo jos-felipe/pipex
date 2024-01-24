@@ -7,10 +7,10 @@
             "request": "launch",
             "program": "${workspaceFolder}/pipex_debug",
             "args": [
-                "infile",
+                "./tests/infile",
                 "cat",
-                "cmd2",
-                "outfile"
+                "grep pipe",
+                "./tests/outfile"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

@@ -22,7 +22,7 @@ COLOR_LIMITER = "\033[0m"
 HEADER_PATH = ./includes
 OBJ_PATH = ./obj/
 SOURCES_PATH = ./src/
-SOURCES = heap.c  main.c  mandatory  safety.c  stack.c  utils.c
+SOURCES = heap.c  main.c  safety.c  shell.c  stack.c  utils.c
 
 ifdef WITH_DEBUG
   NAME = $(DEBUG_NAME)
@@ -35,7 +35,7 @@ OBJECTS = $(addprefix $(OBJ_PATH), $(SOURCES:%.c=%.o))
 all: libft libftprintf $(OBJ_PATH) $(NAME)
 
 libft:
-	@make --directory=$(LIB_PATH) --no-print-directory
+	@make bonus --directory=$(LIB_PATH) --no-print-directory
 	
 libftprintf:
 	@make --directory=$(LIB_PRINTF_PATH) --no-print-directory
@@ -46,7 +46,7 @@ debug:
 $(OBJ_PATH):
 	@mkdir -p $(OBJ_PATH)
 
-$(NAME): $(OBJECTS)
+$(NAME): $(OBJECTS) libft libftprintf
 	@$(CC) $(CFLAGS) -o $(NAME) $(OBJECTS) -L $(LIB_PATH) -L $(LIB_PRINTF_PATH) -lft -lftprintf
 	@echo $(CYAN)" ----------------------------------------------"$(COLOR_LIMITER)
 	@echo $(CYAN)"| PIPEX executable was created successfully!! |"$(COLOR_LIMITER)
@@ -65,8 +65,8 @@ valgrind: debug
 	--show-leak-kinds=all -s \
 	--track-origins=yes \
 	--log-file=$(VALGRIND_LOG) \
-	./$(DEBUG_NAME) infile "cat" "grep teste" outfile
-	# @cat $(VALGRIND_LOG)
+	./$(DEBUG_NAME) ./tests/infile "cat" "grep pipe" ./tests/outfile
+	@cat $(VALGRIND_LOG)
 
 nor: 
 	@echo $(GREEN)[Running Norminette]$(COLOR_LIMITER)

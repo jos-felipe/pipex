@@ -6,7 +6,7 @@
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 19:19:25 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/23 12:15:18 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/24 10:51:18 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,18 +30,6 @@ char	*get_path(char *envp[])
 	return (NULL);
 }
 
-t_list	*ft_lstnew(void *content)
-{
-	t_list	*new;
-
-	new = malloc(sizeof(t_list));
-	if (!new)
-		return (NULL);
-	new->content = content;
-	new->next = NULL;
-	return (new);
-}
-
 void	free_heap(t_list *lst_memory)
 {
 	t_list	*tmp;
@@ -62,7 +50,7 @@ char	*ft_whereis(char *cmd, char *path)
 	char	*fn;
 	int		i;
 
-	if (access(cmd, F_OK) == 0)
+	if (access(cmd, X_OK) == 0)
 		return (ft_strdup(cmd));
 	paths = ft_split(path, ':');
 	i = 0;
@@ -73,13 +61,13 @@ char	*ft_whereis(char *cmd, char *path)
 		if (access(fn, X_OK) == 0)
 		{
 			free(tmp);
-			free(paths);
+			free_split(paths);
 			return (fn);
 		}
 		free(fn);
 		free(tmp);
 		i++;
 	}
-	free(paths);
+	free_split(paths);
 	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 10:28:45 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/23 14:59:10 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/24 11:18:25 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,11 @@ void	safe_exit(t_pipex *pipex)
 	{
 		waitpid(pipex->pid2, &pipex->status, 0);
 		pipex->status = get_exit_status(pipex->status);
-	}	
+	}
+	if (pipex->argv1 != NULL)
+		free_split(pipex->argv1);
+	if (pipex->argv2 != NULL)
+		free_split(pipex->argv2);
 	if (pipex->lst_memory != NULL)
 		free_heap(pipex->lst_memory);
 	if (pipex->status != 0)

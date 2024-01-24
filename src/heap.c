@@ -6,7 +6,7 @@
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 20:11:53 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/23 12:23:20 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/24 11:25:08 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ void	process_cmds(t_pipex *pipex)
 		ft_printf("Memory allocation failed: %s\n", pipex->cmd1);
 		safe_exit(pipex);
 	}
-	ft_lstadd_back(&pipex->lst_memory, ft_lstnew(pipex->argv1));
 	pipex->argv2 = ft_split(pipex->cmd2, ' ');
 	if (pipex->argv2 == NULL)
 	{
@@ -45,7 +44,6 @@ void	process_cmds(t_pipex *pipex)
 		pipex->status = EXIT_FAILURE;
 		safe_exit(pipex);
 	}
-	ft_lstadd_back(&pipex->lst_memory, ft_lstnew(pipex->argv2));
 }
 void 	process_fns(t_pipex *pipex)
 {
@@ -64,4 +62,17 @@ void 	process_fns(t_pipex *pipex)
 		safe_exit(pipex);
 	}
 	ft_lstadd_back(&pipex->lst_memory, ft_lstnew(pipex->fn2));
+}
+
+void	free_split(char **split)
+{
+	int	i;
+
+	i = 0;
+	while (split[i])
+	{
+		free(split[i]);
+		i++;
+	}
+	free(split);
 }
