@@ -60,21 +60,23 @@ $(OBJ_PATH)%.o: $(SOURCES_PATH)%.c $(HEADER_PATH)/pipex.h
 
 valgrind: debug
 	@echo $(GREEN)[Running memory checks]$(COLOR_LIMITER)
-	@wget https://raw.githubusercontent.com/jos-felipe/pipex/master/memory_checker.sh > /dev/null 2>&1
-	@chmod +x checker.sh
-	@./checker.sh
+	@wget -N https://raw.githubusercontent.com/jos-felipe/pipex/master/memory_checker.sh > /dev/null 2>&1
+	@chmod +x memory_checker.sh
+	@./memory_checker.sh
 
 nor: 
 	@echo $(GREEN)[Running Norminette]$(COLOR_LIMITER)
 	@norminette -R CheckForbiddenSourceHeader $(SOURCES_PATH) $(HEADER_PATH)
 	@echo $(GREEN)[Running Norminette on Libft]$(COLOR_LIMITER)
 	@norminette -R CheckForbiddenSourceHeader $(LIB_PATH)
+	@echo $(GREEN)[Running Norminette on Libftprintf]$(COLOR_LIMITER)
+	@norminette -R CheckForbiddenSourceHeader $(LIB_PRINTF_PATH)
 
 tester: all
 	@echo $(GREEN)[Running tests]$(COLOR_LIMITER)
-	@wget https://raw.githubusercontent.com/jos-felipe/pipex/master/tester.sh > /dev/null 2>&1
-	@chmod +x tester.sh
-	@./tester.sh
+	@wget -N https://raw.githubusercontent.com/jos-felipe/pipex/master/funcional_checker.sh > /dev/null 2>&1
+	@chmod +x funcional_checker.sh
+	@./funcional_checker.sh
 
 clean:
 	@echo $(RED)[Removing Objects]$(COLOR_LIMITER)
@@ -92,4 +94,4 @@ fclean: clean
 re: fclean
 	@make --no-print-directory
 
-.PHONY: all clean fclean re libft valgrind debug tester nor qa
+.PHONY: all clean fclean re libft valgrind debug tester nor

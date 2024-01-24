@@ -6,7 +6,7 @@
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 20:11:53 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/24 11:25:08 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/24 13:19:05 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,21 @@
 void	process_envp(t_pipex *pipex, char *envp[])
 {
 	pipex->path = get_path(envp);
-	if (pipex->path == NULL) 
+	if (pipex->path == NULL)
 	{
 		ft_printf("PATH not found\n");
 		pipex->status = EXIT_FAILURE;
 		safe_exit(pipex);
 	}
 	pipex->lst_memory = ft_lstnew(pipex->path);
-	if (pipex->lst_memory == NULL) {
+	if (pipex->lst_memory == NULL)
+	{
 		ft_printf("Memory allocation failed: new list.\n");
 		pipex->status = EXIT_FAILURE;
 		safe_exit(pipex);
 	}
 }
+
 void	process_cmds(t_pipex *pipex)
 {
 	pipex->argv1 = ft_split(pipex->cmd1, ' ');
@@ -45,7 +47,8 @@ void	process_cmds(t_pipex *pipex)
 		safe_exit(pipex);
 	}
 }
-void 	process_fns(t_pipex *pipex)
+
+void	process_fns(t_pipex *pipex)
 {
 	pipex->fn1 = ft_whereis(pipex->argv1[0], pipex->path);
 	if (pipex->fn1 == NULL)

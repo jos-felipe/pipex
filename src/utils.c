@@ -6,13 +6,13 @@
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 19:19:25 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/24 10:51:18 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/24 13:16:23 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-char	*get_path(char *envp[]) 
+char	*get_path(char *envp[])
 {
 	int		i;
 	char	*path;

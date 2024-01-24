@@ -6,7 +6,7 @@
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 10:28:45 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/24 11:18:25 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/24 13:15:40 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 void	validate_user_inputs(int argc, char *argv[], t_pipex *pipex)
 {
-	
 	if (argc == 5)
 		init(pipex, argv);
 	else
@@ -52,6 +51,7 @@ void	safe_exit(t_pipex *pipex)
 		exit(pipex->status);
 	exit(EXIT_SUCCESS);
 }
+
 int	get_exit_status(int exit_status)
 {
 	return ((exit_status & 0xff00) >> 8);
