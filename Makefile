@@ -84,6 +84,8 @@ clean:
 	-rm -rf $(DEBUG_OBJ_PATH)
 	@echo $(RED)[Removing test files]$(COLOR_LIMITER)
 	-rm -rf $(TESTS_PATH)
+	-rm -rf memory_checker.sh
+	-rm -rf funcional_checker.sh
 
 fclean: clean
 	@echo $(RED)[Removing $(NAME) executable]$(COLOR_LIMITER)
