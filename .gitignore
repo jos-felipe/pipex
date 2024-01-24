@@ -1,11 +1,12 @@
 *.out
+main
 *.o
 *.a
 *.pdf
-*.d
-pipex
-pipex_bonus
+*.txt
+pipex*
 .DS_Store
 infile*
 outfile*
+exit_status*
 valgrind.log

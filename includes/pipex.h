@@ -5,80 +5,68 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/18 15:38:33 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/12 11:07:35 by josfelip         ###   ########.fr       */
+/*   Created: 2024/01/22 17:04:24 by josfelip          #+#    #+#             */
+/*   Updated: 2024/01/24 10:53:35 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_H
 # define PIPEX_H
 
-# include "../lib/libft/libft.h"
-# include <fcntl.h>
-# include <unistd.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <sys/wait.h>
-
-# define CMD_NOT_FOUND 127
-# define SPACE 32
-# define TWO_POINTS 58
-
-typedef enum e_bool
-{
-	FALSE,
-	TRUE,
-}		t_bool;
-
-typedef enum e_proc
-{
-	INITIAL,
-	FINAL,
-}		t_proc;
-
-typedef struct s_cmd
-{
-	pid_t	pid;
-	t_proc	proc_type;
-	char	*cmd;
-	char	**argv;
-	char	**envp;
-}			t_cmd;
+#include "../lib/libft/libft.h"
+#include "../lib/ft_printf/ft_printf.h"
+#include <fcntl.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/wait.h>
 
 typedef struct s_pipex
 {
-	int		fd_input_file;
-	int		fd_output_file;
+	char	*infile;
+	char	*cmd1;
+	char	*cmd2;
+	char	*outfile;
+	int		fd_in;
+	int		fd_out;
 	int		fd_pipe[2];
-	size_t	commands;
-	t_cmd	*commands_array;
-	t_bool	success;
-}			t_pipex;
+	int		pid1;
+	int		pid2;
+	char	*path;
+	char	**argv1;
+	char	**argv2;
+	char	*fn1;
+	char	*fn2;
+	t_list	*lst_memory;
+	int		status;
+}				t_pipex;
 
-// Start Functions
-void	start_io_files(t_pipex *pipex, char *argv[]);
-void	start_input_file(t_pipex *pipex, char *in_file);
-void	start_output_file(t_pipex *pipex, char *out_file);
-
-// Utils Functions
-void	handle_error(short exit_code);
-void	handle_file_error(short exit_code);
-void	clear_all(t_pipex *pipex, short exit_code);
-void	clear_invalid_command(t_pipex *pipex, size_t cmd_pos);
+//  heap.c functions prototype
+void	process_envp(t_pipex *pipex, char *envp[]);
+void	process_cmds(t_pipex *pipex);
+void 	process_fns(t_pipex *pipex);
 void	free_split(char **split);
-void	free_variables(char *var, char **split_var);
 
-// Commands Functions
-void	get_commands(t_pipex *pipex, char *argv[], char *envp[]);
-char	*validate_path(char *cmd_name, char **split_path);
-char	*get_cmd_path(char *cmd_name, char *envp[]);
-char	*get_cmd_name(char *cmd_name);
-char	**get_arguments(char *argv);
+//  main.c functions prototype
+int	main(int argc, char *argv[], char *envp[]);
 
-// Execute Functions
-void	execute_commands(t_pipex *pipex);
-void	exec_child_process(t_pipex *pipex, t_cmd *command, size_t cmd_pos);
-void	initial_process(t_pipex *pipex, t_cmd *command, size_t cmd_pos);
-void	final_process(t_pipex *pipex, t_cmd *command, size_t cmd_pos);
+//  safety.c functions prototype
+void	validate_user_inputs(int argc, char *argv[], t_pipex *pipex);
+void	safe_exit(t_pipex *pipex);
+int	get_exit_status(int exit_status);
+
+//  shell.c functions prototype
+void	tty1(t_pipex *pipex, char *envp[]);
+void	tty2(t_pipex *pipex, char *envp[]);
+
+//  stack.c functions prototype
+void	init(t_pipex *pipex, char *argv[]);
+void	connect_fds(t_pipex *pipex);
+
+//  utils.c functions prototype
+char	*get_path(char *envp[]);
+t_list	*ft_lstnew(void *content);
+void	free_heap(t_list *lst_memory);
+char	*ft_whereis(char *cmd, char *path);
 
 #endif
