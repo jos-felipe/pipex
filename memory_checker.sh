@@ -15,6 +15,7 @@ GREEN="\033[32;1m"
 RED="\033[31;1m"
 CYAN="\033[36;1;3;208m"
 WHITE="\033[37;1;4m"
+YELLOW_BG="\033[43;1;3;208m"
 COLOR_LIMITER="\033[0m"
 
 # Path and filenames for the test files
@@ -147,8 +148,48 @@ ft_memory_checker() {
 				--track-origins=yes \
 				--log-file=$valgrind_log \
  				$program $infile $cmd1 $cmd2 $outfile > /dev/null 2>&1
+	cat $valgrind_log | grep "All heap blocks were freed -- no leaks are possible" > /dev/null
+	if [ $? -eq 0 ]; then
+		echo -e $GREEN"[OK]"$COLOR_LIMITER;
+	else
+		echo -e $RED"[KO]"$COLOR_LIMITER;
+	fi
 }
 
-# Test 7 - No arguments
-echo -e $GREEN"[No arguments]"$COLOR_LIMITER
+TEST_NO=6
+
+((TEST_NO++))
+echo -e $YELLOW_BG"$TEST_NO. Invalid arguments"$COLOR_LIMITER
 ft_memory_checker "" "" "" "" $VALGRIND_LOG $NAME
+
+((TEST_NO++))
+echo -e $YELLOW_BG"$TEST_NO. No arguments"$COLOR_LIMITER
+valgrind	--leak-check=full \
+			--show-reachable=yes \
+			--track-fds=yes \
+			--show-leak-kinds=all -s \
+			--track-origins=yes \
+			--log-file=$VALGRIND_LOG \
+ $NAME > /dev/null 2>&1
+cat $VALGRIND_LOG | grep "All heap blocks were freed -- no leaks are possible" > /dev/null
+if [ $? -eq 0 ]; then
+	echo -e $GREEN"[OK]"$COLOR_LIMITER;
+else
+	echo -e $RED"[KO]"$COLOR_LIMITER;
+fi
+
+((TEST_NO++))
+echo -e $YELLOW_BG"$TEST_NO. Too many arguments"$COLOR_LIMITER
+valgrind	--leak-check=full \
+			--show-reachable=yes \
+			--track-fds=yes \
+			--show-leak-kinds=all -s \
+			--track-origins=yes \
+			--log-file=$VALGRIND_LOG \
+ $NAME $INFILE "cat" "grep call" $OUTFILE> /dev/null 2>&1
+cat $VALGRIND_LOG | grep "All heap blocks were freed -- no leaks are possible" > /dev/null
+if [ $? -eq 0 ]; then
+	echo -e $GREEN"[OK]"$COLOR_LIMITER;
+else
+	echo -e $RED"[KO]"$COLOR_LIMITER;
+fi
