@@ -10,3 +10,4 @@ infile*
 outfile*
 exit_status*
 valgrind.log
+./tests/
