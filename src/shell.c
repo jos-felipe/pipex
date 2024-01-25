@@ -6,13 +6,13 @@
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 14:07:02 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/24 13:17:04 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/25 11:37:20 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-void	tty1(t_pipex *pipex, char *envp[])
+void	ft_tty1(t_pipex *pipex, char *envp[])
 {
 	if (pipex->fd_in > -1 && pipex->fn1 && pipex->fn2 && pipex->fd_out > -1)
 	{
@@ -21,7 +21,7 @@ void	tty1(t_pipex *pipex, char *envp[])
 		{
 			ft_printf("Fork failed: pid1.\n");
 			pipex->status = EXIT_FAILURE;
-			safe_exit(pipex);
+			ft_safe_exit(pipex);
 		}
 		if (pipex->pid1 == 0)
 		{
@@ -34,7 +34,7 @@ void	tty1(t_pipex *pipex, char *envp[])
 	}
 }
 
-void	tty2(t_pipex *pipex, char *envp[])
+void	ft_tty2(t_pipex *pipex, char *envp[])
 {
 	if (pipex->fn2)
 	{
@@ -43,7 +43,7 @@ void	tty2(t_pipex *pipex, char *envp[])
 		{
 			ft_printf("Fork failed: pid2.\n");
 			pipex->status = EXIT_FAILURE;
-			safe_exit(pipex);
+			ft_safe_exit(pipex);
 		}
 		if (pipex->pid2 == 0)
 		{
@@ -54,4 +54,9 @@ void	tty2(t_pipex *pipex, char *envp[])
 			execve(pipex->fn2, pipex->argv2, envp);
 		}
 	}
+}
+
+int	ft_get_exit_status(int exit_status)
+{
+	return ((exit_status & 0xff00) >> 8);
 }
