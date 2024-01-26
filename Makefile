@@ -2,7 +2,6 @@ NAME = pipex
 DEBUG_NAME = pipex_debug
 CFLAGS = -Wall -Werror -Wextra
 DFLAGS = -g3
-VALGRIND_LOG = valgrind.log
 
 # Paths for libraries
 LIB_PATH = ./lib/libft
@@ -20,6 +19,7 @@ COLOR_LIMITER = "\033[0m"
 # Paths definitions
 HEADER_PATH = ./includes
 OBJ_PATH = ./obj/
+DEBUG_OBJ_PATH = ./obj_debug/
 TESTS_PATH = ./tests/
 SOURCES_PATH = ./src/
 SOURCES = heap.c  main.c  safety.c  shell.c  stack.c  utils.c
@@ -81,17 +81,18 @@ tester: all
 clean:
 	@echo $(RED)[Removing Objects]$(COLOR_LIMITER)
 	-rm -rf $(OBJ_PATH)
+	-rm -rf $(DEBUG_OBJ_PATH)
 	@echo $(RED)[Removing test files]$(COLOR_LIMITER)
 	-rm -rf $(TESTS_PATH)
 
 fclean: clean
 	@echo $(RED)[Removing $(NAME) executable]$(COLOR_LIMITER)
+	@rm -rf $(NAME)
+	@rm -rf $(DEBUG_NAME)
 	@make fclean -C $(LIB_PATH) --no-print-directory
 	@make fclean -C $(LIB_PRINTF_PATH) --no-print-directory
-	@rm -rf $(NAME)
-	@rm -rf $(VALGRIND_LOG)
 
 re: fclean
 	@make --no-print-directory
 
-.PHONY: all clean fclean re libft valgrind debug tester nor
+.PHONY: all clean fclean re libft libftprintf debug valgrind tester nor
