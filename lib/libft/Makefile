@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: josfelip <josfelip@student.42.fr>          +#+  +:+       +#+         #
+#    By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/20 12:34:41 by josfelip          #+#    #+#              #
-#    Updated: 2023/08/08 08:48:39 by josfelip         ###   ########.fr        #
+#    Updated: 2024/01/26 13:25:53 by josfelip         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -86,7 +86,7 @@ fclean: clean
 re: fclean all
 
 bonus: ${OBJS} ${B_OBJS}
-	ar rc ${NAME} ${OBJS} ${B_OBJS}
+	@ar rc ${NAME} ${OBJS} ${B_OBJS}
 
 .PHONY: all clean fclean re bonus
 

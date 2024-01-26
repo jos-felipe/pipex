@@ -6,7 +6,7 @@
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 10:28:45 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/26 12:10:58 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/26 12:26:56 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,13 +45,13 @@ char	*ft_hacker_protection(char *cmd)
 {
 	char	*warn_msg;
 
-	warn_msg = "Warning: Malicious input detected, possible cancel point\n";
+	warn_msg = "Warning: Unrecognized token, possible undefined behavior.\n";
 	if (!cmd[0])
 	{
 		ft_printf(warn_msg);
 		return (NULL);
 	}
-	if (ft_strchr(cmd, "'") || ft_strchr(cmd, "\"") || ft_strchr(cmd, "\\"))
+	if (ft_strchr(cmd, '\'') || ft_strchr(cmd, '\"') || ft_strchr(cmd, '\\'))
 	{
 		ft_printf(warn_msg);
 		return (NULL);

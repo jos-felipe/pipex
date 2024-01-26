@@ -6,7 +6,7 @@
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 17:04:24 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/26 12:18:32 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/26 12:23:56 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ void	ft_connect_fds(t_pipex *pipex);
 //  safety.c functions prototype
 void	ft_validate_user_inputs(int argc, char *argv[], char *envp[], \
 t_pipex *pipex);
+char	*ft_hacker_protection(char *cmd);
 void	ft_safe_exit(t_pipex *pipex);
 
 //  shell.c functions prototype
