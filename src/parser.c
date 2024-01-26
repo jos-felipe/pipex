@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   heap.c                                             :+:      :+:    :+:   */
+/*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 20:11:53 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/25 13:13:10 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/26 12:18:18 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-void	process_envp(t_pipex *pipex, char *envp[])
+void	ft_process_envp(t_pipex *pipex, char *envp[])
 {
 	pipex->path = get_path(envp);
 	if (pipex->path == NULL)
@@ -32,7 +32,7 @@ void	process_envp(t_pipex *pipex, char *envp[])
 
 void	ft_parse_cmd1(t_pipex *pipex)
 {
-	if (pipex->cmd1[0])
+	if (pipex->cmd1)
 	{
 		pipex->argv1 = ft_split(pipex->cmd1, ' ');
 		if (pipex->argv1 == NULL)
@@ -41,14 +41,19 @@ void	ft_parse_cmd1(t_pipex *pipex)
 			ft_printf("Memory allocation failed: %s\n", pipex->cmd1);
 			ft_safe_exit(pipex);
 		}
+		pipex->fn1 = ft_whereis(pipex->argv1[0], pipex->path);
+		if (pipex->fn1 == NULL)
+			ft_printf("Command not found: %s\n", pipex->argv1[0]);
+		else
+			ft_lstadd_back(&pipex->lst_memory, ft_lstnew(pipex->fn1));
 	}
 	else
-		ft_printf("Invalid cmd1\n");
+		pipex->fn1 = NULL;
 }
 
 void	ft_parse_cmd2(t_pipex *pipex)
 {
-	if (pipex->cmd2[0])
+	if (pipex->cmd2)
 	{
 		pipex->argv2 = ft_split(pipex->cmd2, ' ');
 		if (pipex->argv2 == NULL)
@@ -57,30 +62,15 @@ void	ft_parse_cmd2(t_pipex *pipex)
 			pipex->status = EXIT_FAILURE;
 			ft_safe_exit(pipex);
 		}
+		pipex->fn2 = ft_whereis(pipex->argv2[0], pipex->path);
+		if (pipex->fn2 == NULL)
+		{
+			ft_printf("Command not found: %s\n", pipex->argv2[0]);
+			pipex->status = 127;
+			ft_safe_exit(pipex);
+		}
+		ft_lstadd_back(&pipex->lst_memory, ft_lstnew(pipex->fn2));
 	}
 	else
-	{
-		ft_printf("Invalid cmd2\n");
-		pipex->status = 127;
-		ft_safe_exit(pipex);
-	}	
-}
-
-void	process_fns(t_pipex *pipex)
-{
-	pipex->fn1 = ft_whereis(pipex->argv1[0], pipex->path);
-	if (pipex->fn1 == NULL)
-	{
-		ft_printf("Command not found: %s\n", pipex->argv1[0]);
-	}
-	else
-		ft_lstadd_back(&pipex->lst_memory, ft_lstnew(pipex->fn1));
-	pipex->fn2 = ft_whereis(pipex->argv2[0], pipex->path);
-	if (pipex->fn2 == NULL)
-	{
-		ft_printf("Command not found: %s\n", pipex->argv2[0]);
-		pipex->status = 127;
-		ft_safe_exit(pipex);
-	}
-	ft_lstadd_back(&pipex->lst_memory, ft_lstnew(pipex->fn2));
+		pipex->fn2 = NULL;
 }

@@ -64,8 +64,8 @@ fi
 
 # Test 5 - Non-existent cmd2
 echo -e $GREEN"[Non-existent cmd2]"$COLOR_LIMITER
-$NAME $TMP/infile.txt "cat" "non_existent_cmd2" $TMP/outfile.txt; echo $? > $TMP/exit.txt
-< $TMP/infile.txt cat | "non_existent_cmd2" > $TMP/outfile_ref.txt; echo $? > $TMP/exit_ref.txt
+$NAME $TMP/infile.txt "cat" "non_existent_cmd2" $TMP/outfile.txt > /dev/null 2>&1; echo $? > $TMP/exit.txt
+< $TMP/infile.txt cat | "non_existent_cmd2" > $TMP/outfile_ref.txt > /dev/null 2>&1; echo $? > $TMP/exit_ref.txt
 if diff $TMP/outfile.txt $TMP/outfile_ref.txt && diff $TMP/exit.txt $TMP/exit_ref.txt; then 
 	echo -e $GREEN"[OK]"$COLOR_LIMITER; 
 else 
@@ -74,7 +74,7 @@ fi
 
 # Test 6 - Invalid outfile
 echo -e $GREEN"[Invalid outfile]"$COLOR_LIMITER
-$NAME $TMP/infile.txt "cat" "grep call" /etc/passwd; echo $? > $TMP/exit.txt
+$NAME $TMP/infile.txt "cat" "echo hello" /etc/passwd; echo $? > $TMP/exit.txt
 < $TMP/infile.txt cat | grep call > /etc/passwd; echo $? > $TMP/exit_ref.txt
 if diff $TMP/outfile.txt $TMP/outfile_ref.txt && diff $TMP/exit.txt $TMP/exit_ref.txt; then 
 	echo -e $GREEN"[OK]"$COLOR_LIMITER; 

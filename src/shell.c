@@ -6,7 +6,7 @@
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 14:07:02 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/25 18:37:05 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/26 12:19:49 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	ft_tty1(t_pipex *pipex, char *envp[])
 
 void	ft_tty2(t_pipex *pipex, char *envp[])
 {
-	if (pipex->fn2)
+	if (pipex->fn2 && pipex->fd_out > -1)
 	{
 		pipex->pid2 = fork();
 		if (pipex->pid2 < 0)

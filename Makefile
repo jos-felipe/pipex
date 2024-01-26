@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/01/26 11:03:46 by josfelip          #+#    #+#              #
+#    Updated: 2024/01/26 11:04:23 by josfelip         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME = pipex
 DEBUG_NAME = pipex_debug
 CFLAGS = -Wall -Werror -Wextra
@@ -22,7 +34,7 @@ OBJ_PATH = ./obj/
 DEBUG_OBJ_PATH = ./obj_debug/
 TESTS_PATH = ./tests/
 SOURCES_PATH = ./src/
-SOURCES = heap.c  main.c  safety.c  shell.c  utils.c
+SOURCES = parser.c  main.c  safety.c  shell.c  utils.c
 
 ifdef WITH_DEBUG
   NAME = $(DEBUG_NAME)

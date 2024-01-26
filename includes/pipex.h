@@ -6,7 +6,7 @@
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 17:04:24 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/25 18:25:48 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/26 12:18:32 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,10 @@ typedef struct s_pipex
 	int		status;
 }				t_pipex;
 
-//  heap.c functions prototype
-void	process_envp(t_pipex *pipex, char *envp[]);
+//  parser.c functions prototype
+void	ft_process_envp(t_pipex *pipex, char *envp[]);
 void	ft_parse_cmd1(t_pipex *pipex);
 void	ft_parse_cmd2(t_pipex *pipex);
-void	process_fns(t_pipex *pipex);
 
 //  main.c functions prototype
 int		main(int argc, char *argv[], char *envp[]);
@@ -53,7 +52,8 @@ void	ft_init(t_pipex *pipex);
 void	ft_connect_fds(t_pipex *pipex);
 
 //  safety.c functions prototype
-void	ft_validate_user_inputs(int argc, char *argv[], t_pipex *pipex);
+void	ft_validate_user_inputs(int argc, char *argv[], char *envp[], \
+t_pipex *pipex);
 void	ft_safe_exit(t_pipex *pipex);
 
 //  shell.c functions prototype

@@ -6,26 +6,57 @@
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 10:28:45 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/25 11:46:54 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/26 12:10:58 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-void	ft_validate_user_inputs(int argc, char *argv[], t_pipex *pipex)
+void	ft_validate_user_inputs(int argc, char *argv[], char *envp[], \
+t_pipex *pipex)
 {
 	if (argc == 5)
 	{
 		pipex->infile = argv[1];
-		pipex->cmd1 = argv[2];
-		pipex->cmd2 = argv[3];
 		pipex->outfile = argv[4];
+		pipex->cmd1 = ft_hacker_protection(argv[2]);
+		if (pipex->cmd1 == NULL)
+			ft_printf("Invalid cmd1\n");
+		pipex->cmd2 = ft_hacker_protection(argv[3]);
+		if (pipex->cmd2 == NULL)
+		{
+			ft_printf("Invalid cmd2\n");
+			exit(EXIT_FAILURE);
+		}
+		if (envp[0] == NULL)
+		{
+			ft_printf("Environment variables not found\n");
+			exit(EXIT_FAILURE);
+		}
 	}
 	else
 	{
 		ft_printf("Usage:\n%s infile cmd1 cmd2 outfile\n", argv[0]);
 		exit(EXIT_FAILURE);
 	}
+}
+
+char	*ft_hacker_protection(char *cmd)
+{
+	char	*warn_msg;
+
+	warn_msg = "Warning: Malicious input detected, possible cancel point\n";
+	if (!cmd[0])
+	{
+		ft_printf(warn_msg);
+		return (NULL);
+	}
+	if (ft_strchr(cmd, "'") || ft_strchr(cmd, "\"") || ft_strchr(cmd, "\\"))
+	{
+		ft_printf(warn_msg);
+		return (NULL);
+	}
+	return (cmd);
 }
 
 void	ft_safe_exit(t_pipex *pipex)

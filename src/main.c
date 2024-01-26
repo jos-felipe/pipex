@@ -6,7 +6,7 @@
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/24 13:15:59 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/25 18:32:50 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/26 12:18:23 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	ft_init(t_pipex *pipex)
 	pipex->status = 0;
 }
 
-void	connect_fds(t_pipex *pipex)
+void	ft_connect_fds(t_pipex *pipex)
 {
 	pipex->fd_in = open(pipex->infile, O_RDONLY);
 	if (pipex->fd_in == -1)
@@ -49,7 +49,11 @@ void	connect_fds(t_pipex *pipex)
 		ft_safe_exit(pipex);
 	}
 	if (pipe(pipex->fd_pipe) == -1)
+	{
 		perror(pipex->outfile);
+		pipex->status = EXIT_FAILURE;
+		ft_safe_exit(pipex);
+	}
 }
 
 int	main(int argc, char *argv[], char *envp[])
@@ -57,12 +61,11 @@ int	main(int argc, char *argv[], char *envp[])
 	t_pipex	pipex;
 
 	ft_init(&pipex);
-	ft_validate_user_inputs(argc, argv, &pipex);
-	connect_fds(&pipex);
-	process_envp(&pipex, envp);
+	ft_validate_user_inputs(argc, argv, envp, &pipex);
+	ft_connect_fds(&pipex);
+	ft_process_envp(&pipex, envp);
 	ft_parse_cmd1(&pipex);
 	ft_parse_cmd2(&pipex);
-	process_fns(&pipex);
 	ft_tty1(&pipex, envp);
 	ft_tty2(&pipex, envp);
 	ft_safe_exit(&pipex);
