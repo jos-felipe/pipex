@@ -221,3 +221,19 @@ if [ $? -eq 0 ]; then
 else
 	echo -e $RED"[KO]"$COLOR_LIMITER;
 fi
+
+((TEST_NO++))
+echo -e $YELLOW_BG"$TEST_NO. Invalid token"$COLOR_LIMITER
+valgrind	--leak-check=full \
+			--show-reachable=yes \
+			--track-fds=yes \
+			--show-leak-kinds=all -s \
+			--track-origins=yes \
+			--log-file=$VALGRIND_LOG \
+$NAME $INFILE "echo Hello World" "tr ' ' '\n'" $OUTFILE > /dev/null 2>&1
+cat $VALGRIND_LOG | grep "All heap blocks were freed -- no leaks are possible" > /dev/null
+if [ $? -eq 0 ]; then
+	echo -e $GREEN"[OK]"$COLOR_LIMITER;
+else
+	echo -e $RED"[KO]"$COLOR_LIMITER;
+fi
