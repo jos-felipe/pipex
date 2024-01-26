@@ -6,25 +6,29 @@
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 10:28:45 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/24 13:15:40 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/25 11:46:54 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-void	validate_user_inputs(int argc, char *argv[], t_pipex *pipex)
+void	ft_validate_user_inputs(int argc, char *argv[], t_pipex *pipex)
 {
 	if (argc == 5)
-		init(pipex, argv);
+	{
+		pipex->infile = argv[1];
+		pipex->cmd1 = argv[2];
+		pipex->cmd2 = argv[3];
+		pipex->outfile = argv[4];
+	}
 	else
 	{
 		ft_printf("Usage:\n%s infile cmd1 cmd2 outfile\n", argv[0]);
-		pipex->status = EXIT_FAILURE;
-		safe_exit(pipex);
+		exit(EXIT_FAILURE);
 	}
 }
 
-void	safe_exit(t_pipex *pipex)
+void	ft_safe_exit(t_pipex *pipex)
 {
 	if (pipex->fd_in != -1)
 		close(pipex->fd_in);
@@ -39,7 +43,7 @@ void	safe_exit(t_pipex *pipex)
 	if (pipex->pid2 != -1)
 	{
 		waitpid(pipex->pid2, &pipex->status, 0);
-		pipex->status = get_exit_status(pipex->status);
+		pipex->status = ft_get_exit_status(pipex->status);
 	}
 	if (pipex->argv1 != NULL)
 		free_split(pipex->argv1);
@@ -50,9 +54,4 @@ void	safe_exit(t_pipex *pipex)
 	if (pipex->status != 0)
 		exit(pipex->status);
 	exit(EXIT_SUCCESS);
-}
-
-int	get_exit_status(int exit_status)
-{
-	return ((exit_status & 0xff00) >> 8);
 }

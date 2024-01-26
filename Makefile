@@ -22,7 +22,7 @@ OBJ_PATH = ./obj/
 DEBUG_OBJ_PATH = ./obj_debug/
 TESTS_PATH = ./tests/
 SOURCES_PATH = ./src/
-SOURCES = heap.c  main.c  safety.c  shell.c  stack.c  utils.c
+SOURCES = heap.c  main.c  safety.c  shell.c  utils.c
 
 ifdef WITH_DEBUG
   NAME = $(DEBUG_NAME)
@@ -60,7 +60,7 @@ $(OBJ_PATH)%.o: $(SOURCES_PATH)%.c $(HEADER_PATH)/pipex.h
 
 valgrind: debug
 	@echo $(GREEN)[Running memory checks]$(COLOR_LIMITER)
-	@wget -N https://raw.githubusercontent.com/jos-felipe/pipex/master/memory_checker.sh > /dev/null 2>&1
+	@wget -nc https://raw.githubusercontent.com/jos-felipe/pipex/42sub/memory_checker.sh > /dev/null 2>&1
 	@chmod +x memory_checker.sh
 	@./memory_checker.sh
 
@@ -74,7 +74,7 @@ nor:
 
 tester: all
 	@echo $(GREEN)[Running tests]$(COLOR_LIMITER)
-	@wget -N https://raw.githubusercontent.com/jos-felipe/pipex/master/funcional_checker.sh > /dev/null 2>&1
+	@wget -nc https://raw.githubusercontent.com/jos-felipe/pipex/42sub/funcional_checker.sh > /dev/null 2>&1
 	@chmod +x funcional_checker.sh
 	@./funcional_checker.sh
 
