@@ -6,7 +6,7 @@
 #    By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/26 11:03:46 by josfelip          #+#    #+#              #
-#    Updated: 2024/01/29 10:52:40 by josfelip         ###   ########.fr        #
+#    Updated: 2024/01/29 13:03:35 by josfelip         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,6 +35,7 @@ DEBUG_OBJ_PATH = ./obj_debug/
 TESTS_PATH = ./tests/
 SOURCES_PATH = ./src/
 SOURCES = parser.c  main.c  safety.c  shell.c  utils.c
+MANDATORY_SOURCES = $(addprefix $(SOURCES_PATH), $(SOURCES))
 
 ifdef WITH_DEBUG
   NAME = $(DEBUG_NAME)
@@ -44,10 +45,10 @@ endif
 
 OBJECTS = $(addprefix $(OBJ_PATH), $(SOURCES:%.c=%.o))
 
-all: libft libftprintf $(OBJ_PATH) $(NAME)
+all: libft libftprintf $(OBJ_PATH) $(OBJECTS) $(NAME)
 
 libft:
-	@make bonus --directory=$(LIB_PATH) --no-print-directory
+	@make --directory=$(LIB_PATH) --no-print-directory
 	
 libftprintf:
 	@make --directory=$(LIB_PRINTF_PATH) --no-print-directory
@@ -56,10 +57,10 @@ debug:
 	@make WITH_DEBUG=TRUE --no-print-directory
 
 $(OBJ_PATH):
-	@mkdir -p $(OBJ_PATH)
+	mkdir -p $(OBJ_PATH)
 
-$(NAME): $(OBJECTS) libft libftprintf
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJECTS) -L $(LIB_PATH) -L $(LIB_PRINTF_PATH) -lft -lftprintf
+$(NAME):
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJECTS) -L $(LIB_PATH) -L $(LIB_PRINTF_PATH) -lft -lftprintf
 	@echo $(CYAN)" ----------------------------------------------"$(COLOR_LIMITER)
 	@echo $(CYAN)"| PIPEX executable was created successfully!! |"$(COLOR_LIMITER)
 	@echo $(CYAN)"----------------------------------------------"$(COLOR_LIMITER)
@@ -89,6 +90,8 @@ tester: all
 	@wget -nc https://raw.githubusercontent.com/jos-felipe/pipex/master/funcional_checker.sh > /dev/null 2>&1
 	@chmod +x funcional_checker.sh
 	@./funcional_checker.sh
+
+qa: nor tester valgrind
 
 clean:
 	@echo $(RED)[Removing Objects]$(COLOR_LIMITER)
