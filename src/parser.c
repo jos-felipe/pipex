@@ -6,7 +6,7 @@
 /*   By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 20:11:53 by josfelip          #+#    #+#             */
-/*   Updated: 2024/01/26 12:18:18 by josfelip         ###   ########.fr       */
+/*   Updated: 2024/01/29 11:50:43 by josfelip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,10 @@ void	ft_parse_cmd1(t_pipex *pipex)
 	if (pipex->cmd1)
 	{
 		pipex->argv1 = ft_split(pipex->cmd1, ' ');
-		if (pipex->argv1 == NULL)
+		if (pipex->argv1 == NULL || pipex->argv1[0] == NULL)
 		{
 			pipex->status = EXIT_FAILURE;
-			ft_printf("Memory allocation failed: %s\n", pipex->cmd1);
+			ft_printf("Memory allocation failed for cmd1\n");
 			ft_safe_exit(pipex);
 		}
 		pipex->fn1 = ft_whereis(pipex->argv1[0], pipex->path);
@@ -56,9 +56,9 @@ void	ft_parse_cmd2(t_pipex *pipex)
 	if (pipex->cmd2)
 	{
 		pipex->argv2 = ft_split(pipex->cmd2, ' ');
-		if (pipex->argv2 == NULL)
+		if (pipex->argv2 == NULL || pipex->argv2[0] == NULL)
 		{
-			ft_printf("Memory allocation failed: %s\n", pipex->cmd2);
+			ft_printf("Memory allocation failed for cmd2\n");
 			pipex->status = EXIT_FAILURE;
 			ft_safe_exit(pipex);
 		}
